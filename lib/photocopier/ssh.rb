@@ -7,6 +7,7 @@ require 'photocopier/adapter'
 
 module Photocopier
   class SSH < Adapter
+    attr_reader :session
 
     def initialize(options)
       @options = options
