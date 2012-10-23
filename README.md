@@ -58,6 +58,7 @@ all).
   user: '',
   password: ''
 }
+```
 
 ## SSH Gotchas
 
