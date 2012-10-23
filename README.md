@@ -47,19 +47,34 @@ ssh.put_directory('./local_dir', 'remote_dir')
 ```
 The very same commands are valid for the `Photocopier::FTP` adapter.
 
+## FTP
+
+`Photocopier::FTP.new` accepts the following parameters (you need to pass them
+all).
+
+```ruby
+{
+  host: '',
+  user: '',
+  password: ''
+}
+
 ## SSH Gotchas
 
-`Photocopier::SSH.new` accepts the following parameters:
+`Photocopier::SSH.new` accepts the following parameters (you DON'T need
+to pass them all).
 
 ```ruby
 {
   host: '',
   user: '',
   password: '',
+  port: '',
   gateway: {
     host: '',
     user: '',
     password: '',
+    port: ''
   }
 }
 ```
