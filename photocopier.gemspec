@@ -4,8 +4,8 @@ require File.expand_path('../lib/photocopier/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Stefano Verna"]
   gem.email         = ["stefano.verna@welaika.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
+  gem.summary       = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($\)
