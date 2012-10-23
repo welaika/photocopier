@@ -39,6 +39,9 @@ ssh.put('foobar!', 'remote_file.txt')
 # uploads a file
 ssh.put('./local_file.txt', 'remote_file.txt')
 
+# deletes a file
+ssh.delete('remote_file.txt')
+
 # mirros the remote directory into the local machine (needs rsync on the local machine)
 ssh.get_directory('remote_dir', './local_dir')
 
