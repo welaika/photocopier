@@ -59,6 +59,8 @@ all).
   password: ''
 }
 ```
+For performance reasons, the `.get_directory` and `.put_directory` commands make
+use of `lftp`.
 
 ## SSH Gotchas
 
@@ -86,7 +88,7 @@ and reliable ways to authenticate (`ssh-copy-id` anyone?).
 The passwords specified will be used during `.get` and `.put` commands (which use
 the pure-ruby `net-ssh` gem). For performance reasons, the `.get_directory` and
 `.put_directory` commands make use of `rsync`. There's no easy way to pass SSH
-passwords to rsync: the only way is to install a tool called [`sshpass`](http://sourceforge.net/projects/sshpass/)
+passwords to `rsync`: the only way is to install a tool called [`sshpass`](http://sourceforge.net/projects/sshpass/)
 on your machine (and on the gateway machine, if you also need to specify the password
 of the final machine).
 
