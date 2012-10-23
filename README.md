@@ -60,9 +60,9 @@ all).
 }
 ```
 For performance reasons, the `.get_directory` and `.put_directory` commands make
-use of `lftp`.
+use of `lftp`, so you need to have it installed on your machine.
 
-## SSH Gotchas
+## SSH
 
 `Photocopier::SSH.new` accepts the following parameters (you DON'T need
 to pass them all).
@@ -82,14 +82,16 @@ to pass them all).
 }
 ```
 
-**TL;DR:** Avoid specifying passwords on Photocopier::SSH, and use more secure
-and reliable ways to authenticate (`ssh-copy-id` anyone?).
+For performance reasons, the `.get_directory` and `.put_directory` commands make
+use of `rsync`, so you need to have it installed on your machine.
 
-The passwords specified will be used during `.get` and `.put` commands (which use
-the pure-ruby `net-ssh` gem). For performance reasons, the `.get_directory` and
-`.put_directory` commands make use of `rsync`. There's no easy way to pass SSH
-passwords to `rsync`: the only way is to install a tool called [`sshpass`](http://sourceforge.net/projects/sshpass/)
-on your machine (and on the gateway machine, if you also need to specify the password
+### Password gotchas
+**TL;DR:** Avoid specifying the `password` argument on Photocopier::SSH, and
+use more secure and reliable ways to authenticate (`ssh-copy-id` anyone?).
+
+There's no easy way to pass SSH passwords to `rsync`: the only way is to install
+a tool called [`sshpass`](http://sourceforge.net/projects/sshpass/) on your
+machine (and on the gateway machine, if you also need to specify the password
 of the final machine).
 
 On Linux, you can install it with your standard package manager. On Mac, you can
