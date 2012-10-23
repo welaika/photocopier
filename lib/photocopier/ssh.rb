@@ -7,7 +7,6 @@ require 'photocopier/adapter'
 
 module Photocopier
   class SSH < Adapter
-    attr_reader :session
 
     def initialize(options)
       @options = options
@@ -38,6 +37,19 @@ module Photocopier
       rsync local_path, ":#{remote_path}"
     end
 
+    def session
+      opts = options
+      host = opts.delete(:host)
+      user = opts.delete(:user)
+      opts.delete(:gateway)
+      opts.delete(:sshpass)
+      @session ||= if gateway_options.any?
+                     gateway.ssh(host, user, opts)
+                   else
+                     Net::SSH.start(host, user, opts)
+                   end
+    end
+
     private
 
     def rsync(source, destination)
@@ -63,19 +75,6 @@ module Photocopier
         command = "sshpass -p #{opts[:password]} #{command}"
       end
       command
-    end
-
-    def session
-      opts = options
-      host = opts.delete(:host)
-      user = opts.delete(:user)
-      opts.delete(:gateway)
-      opts.delete(:sshpass)
-      @session ||= if gateway_options.any?
-                     gateway.ssh(host, user, opts)
-                   else
-                     Net::SSH.start(host, user, opts)
-                   end
     end
 
     def gateway

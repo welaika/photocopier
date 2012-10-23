@@ -34,6 +34,14 @@ module Photocopier
       lftp(local_path, remote_path, true)
     end
 
+    def session
+      opts = options
+      host = opts.delete(:host)
+      user = opts.delete(:user)
+      password = opts.delete(:password)
+      @session ||= Net::FTP.open(host, user, password)
+    end
+
     private
 
     def lftp(local, remote, reverse)
@@ -67,21 +75,12 @@ module Photocopier
     end
 
     def lftp_mirrir_arguments(local, remote, reverse)
-
       arguments = []
       if gateway_options.any?
         arguments << ssh_command(gateway_options)
       end
       arguments << ssh_command(options)
       arguments.join(" ")
-    end
-
-    def session
-      opts = options
-      host = opts.delete(:host)
-      user = opts.delete(:user)
-      password = opts.delete(:password)
-      @session ||= Net::FTP.open(host, user, password)
     end
 
   end
