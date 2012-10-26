@@ -104,6 +104,10 @@ have it via [`brew`](https://github.com/mxcl/homebrew):
 sudo brew install https://raw.github.com/gist/1513663/3e98bf9e03feb7e31eeddcd08f89ca86163a376d/sshpass.rb
 ```
 
+**Please note that on Ubuntu 11.10 `sshpass` is at version 1.04, which has a
+[bug](https://bugs.launchpad.net/ubuntu/+source/sshpass/+bug/774882) that prevents
+it from working. Install version 1.03 or 1.05.**
+
 ## Contributing
 
 1. Fork it
