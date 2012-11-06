@@ -23,8 +23,8 @@ module Photocopier
 
     def delete(remote_path); end
 
-    def get_directory(remote_path, local_path); end
-    def put_directory(local_path, remote_path); end
+    def get_directory(remote_path, local_path, exclude = []); end
+    def put_directory(local_path, remote_path, exclude = []); end
 
     protected
 

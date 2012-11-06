@@ -25,12 +25,12 @@ module Photocopier
       session.delete(remote_path)
     end
 
-    def get_directory(remote_path, local_path)
+    def get_directory(remote_path, local_path, exclude = [])
       FileUtils.mkdir_p(local_path)
       lftp(local_path, remote_path, false)
     end
 
-    def put_directory(local_path, remote_path)
+    def put_directory(local_path, remote_path, exclude = [])
       lftp(local_path, remote_path, true)
     end
 

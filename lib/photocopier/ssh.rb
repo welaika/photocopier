@@ -28,13 +28,13 @@ module Photocopier
       session.exec!("rm -rf #{remote_path}")
     end
 
-    def get_directory(remote_path, local_path)
+    def get_directory(remote_path, local_path, exclude = [])
       FileUtils.mkdir_p(local_path)
-      rsync ":#{remote_path}", local_path
+      rsync ":#{remote_path}", local_path, exclude
     end
 
-    def put_directory(local_path, remote_path)
-      rsync local_path, ":#{remote_path}"
+    def put_directory(local_path, remote_path, exclude = [])
+      rsync local_path, ":#{remote_path}", exclude
     end
 
     def session
@@ -52,9 +52,21 @@ module Photocopier
 
     private
 
-    def rsync(source, destination)
-      run "rsync", "--progress", "-e", rsh_arguments, "--archive", "--compress",
-          "--omit-dir-times", "--delete", "#{source}/", destination
+    def rsync(source, destination, exclude)
+      command = [
+        "rsync", "--progress", "-e", rsh_arguments, "--archive", "--compress",
+        "--omit-dir-times", "--delete"
+      ]
+
+      exclude.map do |glob|
+        command << "--exclude"
+        command << glob
+      end
+
+      command << "#{source}/"
+      command << destination
+
+      run *command
     end
 
     def rsh_arguments
