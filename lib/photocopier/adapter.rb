@@ -29,7 +29,11 @@ module Photocopier
     protected
 
     def run(*args)
-      system Escape.shell_command(args)
+      command = Escape.shell_command(args)
+      if logger.present?
+        logger.info command
+      end
+      system command
     end
   end
 

@@ -27,11 +27,11 @@ module Photocopier
 
     def get_directory(remote_path, local_path, exclude = [])
       FileUtils.mkdir_p(local_path)
-      lftp(local_path, remote_path, false)
+      lftp(local_path, remote_path, false, exclude)
     end
 
     def put_directory(local_path, remote_path, exclude = [])
-      lftp(local_path, remote_path, true)
+      lftp(local_path, remote_path, true, exclude)
     end
 
     def session
@@ -44,7 +44,7 @@ module Photocopier
 
     private
 
-    def lftp(local, remote, reverse)
+    def lftp(local, remote, reverse, exclude)
       run "lftp",
           "-c",
           [
@@ -53,7 +53,7 @@ module Photocopier
             "mkdir -p #{remote}",
             "cd #{remote}",
             "lcd #{local}",
-            lftp_mirror_arguments(reverse)
+            lftp_mirror_arguments(reverse, exclude)
           ].join("; ")
     end
 
@@ -68,9 +68,12 @@ module Photocopier
       url
     end
 
-    def lftp_mirror_arguments(reverse)
+    def lftp_mirror_arguments(reverse, exclude = [])
       mirror = "mirror --delete --use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=2"
       mirror << " --reverse" if reverse
+      exclude.each do |glob|
+        mirror << " --exclude-glob #{glob}"
+      end
       mirror
     end
 
