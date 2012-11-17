@@ -35,11 +35,11 @@ module Photocopier
     end
 
     def session
-      opts = options
-      host = opts.delete(:host)
-      user = opts.delete(:user)
-      password = opts.delete(:password)
-      @session ||= Net::FTP.open(host, user, password)
+      if @session.nil?
+        @session = Net::FTP.open(options[:host], options[:user], options[:password])
+        @session.passive = options[:passive] if options.has_key?(:passive)
+      end
+      @session
     end
 
     private
