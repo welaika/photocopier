@@ -100,6 +100,5 @@ module Photocopier
     def gateway_options
       options[:gateway] || {}
     end
-
   end
 end
