@@ -8,7 +8,7 @@ require 'photocopier/adapter'
 module Photocopier
   class SSH < Adapter
 
-    def initialize(options)
+    def initialize(options = {})
       @options = options
     end
 
@@ -52,7 +52,7 @@ module Photocopier
 
     private
 
-    def rsync(source, destination, exclude)
+    def rsync(source, destination, exclude = [])
       command = [
         "rsync", "--progress", "-e", rsh_arguments, "--archive", "--compress",
         "--omit-dir-times", "--delete"
@@ -100,6 +100,5 @@ module Photocopier
     def gateway_options
       options[:gateway] || {}
     end
-
   end
 end

@@ -5,7 +5,7 @@ require 'fileutils'
 module Photocopier
   class FTP < Adapter
 
-    def initialize(options)
+    def initialize(options = {})
       @options = options
     end
 
@@ -76,16 +76,5 @@ module Photocopier
       end
       mirror
     end
-
-    def lftp_mirrir_arguments(local, remote, reverse)
-      arguments = []
-      if gateway_options.any?
-        arguments << ssh_command(gateway_options)
-      end
-      arguments << ssh_command(options)
-      arguments.join(" ")
-    end
-
   end
-
 end
