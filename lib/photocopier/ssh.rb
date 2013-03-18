@@ -25,7 +25,7 @@ module Photocopier
     end
 
     def delete(remote_path)
-      session.exec!("rm -rf #{remote_path}")
+      exec!("rm -rf #{remote_path}")
     end
 
     def get_directory(remote_path, local_path, exclude = [])
@@ -48,6 +48,18 @@ module Photocopier
                    else
                      Net::SSH.start(host, user, opts)
                    end
+    end
+
+    def exec!(cmd)
+      result = ""
+      exit_code = nil
+      session.exec!(cmd) do |ch, type, data|
+        result << data
+        ch.on_request("exit-status") do |ch, data|
+          exit_code = data.read_long
+        end
+      end
+      [ result, exit_code ]
     end
 
     private

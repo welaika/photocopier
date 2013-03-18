@@ -149,7 +149,7 @@ describe Photocopier::SSH do
 
     context "#delete" do
       it "should delete a remote path" do
-        session.should_receive(:exec!).with("rm -rf foo")
+        ssh.should_receive(:exec!).with("rm -rf foo")
         ssh.delete("foo")
       end
     end
@@ -174,4 +174,5 @@ describe Photocopier::SSH do
       end
     end
   end
+
 end
