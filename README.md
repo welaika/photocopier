@@ -48,8 +48,8 @@ ssh.get_directory('remote_dir', './local_dir')
 # and viceversa
 ssh.put_directory('./local_dir', 'remote_dir')
 
-# execs a command and waits for the result, returns output and exit code
-ssh.exec!('pwd') # => [ "/home/128423/users/.home\n", 0 ]
+# execs a command and waits for the result, returns stdout, stderr and exit code
+ssh.exec!('pwd') # => [ "/home/128423/users/.home\n", "", 0 ]
 ```
 The very same commands are valid for the `Photocopier::FTP` adapter.
 

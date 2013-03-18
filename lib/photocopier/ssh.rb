@@ -51,15 +51,24 @@ module Photocopier
     end
 
     def exec!(cmd)
-      result = ""
+      stdout = ""
+      stderr = ""
       exit_code = nil
-      session.exec!(cmd) do |ch, type, data|
-        result << data
-        ch.on_request("exit-status") do |ch, data|
-          exit_code = data.read_long
+      session.open_channel do |channel|
+        channel.exec(cmd) do |ch, success|
+          channel.on_data do |ch, data|
+            stdout << data
+          end
+          channel.on_extended_data do |ch, type, data|
+            stderr << data
+          end
+          channel.on_request("exit-status") do |ch, data|
+            exit_code = data.read_long
+          end
         end
       end
-      [ result, exit_code ]
+      session.loop
+      [ stdout, stderr, exit_code ]
     end
 
     private
