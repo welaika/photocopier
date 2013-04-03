@@ -75,7 +75,7 @@ module Photocopier
 
     def rsync(source, destination, exclude = [])
       command = [
-        "rsync", "--progress", "-e", rsh_arguments, "--archive", "--compress",
+        "rsync", "--progress", "-e", rsh_arguments, "-rlpt", "--compress",
         "--omit-dir-times", "--delete"
       ]
 

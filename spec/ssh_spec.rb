@@ -98,7 +98,7 @@ describe Photocopier::SSH do
         --progress
         -e
         rsh_arguments
-        --archive
+        -rlpt
         --compress
         --omit-dir-times
         --delete
