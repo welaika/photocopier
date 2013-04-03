@@ -57,31 +57,23 @@ describe Photocopier::SSH do
     context "given a password" do
       let(:options) do { :host => "host", :password => "password" } end
 
-      context "sshpass is enabled" do
-        it "should be added to the command" do
-          ssh.send(:ssh_command, options, true).should == "sshpass -p password ssh host"
-        end
-      end
-
-      context "sshpass is disabled" do
-        it "should not change the command" do
-          ssh.send(:ssh_command, options, false).should == "ssh host"
-        end
+      it "sshpass should be added to the command" do
+        ssh.send(:ssh_command, options).should == "sshpass -p password ssh host"
       end
     end
   end
 
   context "#rsh_arguments" do
     it "should build arguments for rsync" do
-      ssh.should_receive(:ssh_command).with(options, anything)
+      ssh.should_receive(:ssh_command).with(options)
       ssh.send(:rsh_arguments)
     end
 
     context "given a gateway" do
       let(:options) { options_with_gateway }
       it "should include gateway options" do
-        ssh.should_receive(:ssh_command).with(gateway_config, anything)
-        ssh.should_receive(:ssh_command).with(options, anything)
+        ssh.should_receive(:ssh_command).with(gateway_config)
+        ssh.should_receive(:ssh_command).with(options)
         ssh.send(:rsh_arguments)
       end
     end
