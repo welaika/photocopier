@@ -42,7 +42,6 @@ module Photocopier
       host = opts.delete(:host)
       user = opts.delete(:user)
       opts.delete(:gateway)
-      opts.delete(:sshpass)
       @session ||= if gateway_options.any?
                      gateway.ssh(host, user, opts)
                    else
@@ -93,18 +92,18 @@ module Photocopier
     def rsh_arguments
       arguments = []
       if gateway_options.any?
-        arguments << ssh_command(gateway_options, options[:sshpass])
+        arguments << ssh_command(gateway_options)
       end
-      arguments << ssh_command(options, gateway_options[:sshpass])
+      arguments << ssh_command(options)
       arguments.join(" ")
     end
 
-    def ssh_command(opts, use_sshpass=true)
+    def ssh_command(opts)
       command = "ssh "
       command << "-p #{opts[:port]} " if opts[:port].present?
       command << "#{opts[:user]}@" if opts[:user].present?
       command << opts[:host]
-      if opts[:password] && use_sshpass
+      if opts[:password]
         command = "sshpass -p #{opts[:password]} #{command}"
       end
       command
@@ -114,7 +113,6 @@ module Photocopier
       opts = gateway_options
       host = opts.delete(:host)
       user = opts.delete(:user)
-      opts.delete(:sshpass)
       @gateway ||= Net::SSH::Gateway.new(host, user, opts)
     end
 
