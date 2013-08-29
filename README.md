@@ -85,6 +85,7 @@ to pass them all).
     password: '',
     port: ''
   }
+  rsync_options: ''
 }
 ```
 
