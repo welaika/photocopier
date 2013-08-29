@@ -79,13 +79,13 @@ to pass them all).
   user: '',
   password: '',
   port: '',
+  rsync_options: '',
   gateway: {
     host: '',
     user: '',
     password: '',
     port: ''
   }
-  rsync_options: ''
 }
 ```
 
