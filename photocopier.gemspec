@@ -2,11 +2,11 @@
 require File.expand_path('../lib/photocopier/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Stefano Verna"]
-  gem.email         = ["stefano.verna@welaika.com"]
+  gem.authors       = ["Stefano Verna", "Ju Liu"]
+  gem.email         = ["stefano.verna@welaika.com", "ju.liu@welaika.com"]
   gem.description   = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
   gem.summary       = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
-  gem.homepage      = "https://github.com/stefanoverna/photocopier"
+  gem.homepage      = "https://github.com/welaika/photocopier"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

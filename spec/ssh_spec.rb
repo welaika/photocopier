@@ -5,13 +5,13 @@ describe Photocopier::SSH do
   it_behaves_like "a Photocopier adapter"
 
   let(:ssh) { Photocopier::SSH.new(options) }
-  let(:options) do { :host => "host", :user => "user" } end
-  let(:gateway_config) do { :host => "gate_host", :user => "gate_user" } end
+  let(:options) do { host: "host", user: "user" } end
+  let(:gateway_config) do { host: "gate_host", user: "gate_user" } end
   let(:options_with_gateway) do
     {
-      :host => "host",
-      :user => "user",
-      :gateway => gateway_config
+      host: "host",
+      user: "user",
+      gateway: gateway_config
     }
   end
 
@@ -23,7 +23,7 @@ describe Photocopier::SSH do
 
     context "given a gateway " do
       let(:options) { options_with_gateway }
-      let(:gateway) { stub }
+      let(:gateway) { double }
 
       it "goes through it to retrieve a session" do
         Net::SSH::Gateway.stub(:new).with("gate_host", "gate_user", {}).and_return(gateway)
@@ -34,31 +34,31 @@ describe Photocopier::SSH do
   end
 
   context "#ssh_command" do
-    let(:options) do { :host => "host" } end
+    let(:options) do { host: "host" } end
 
     it "should build an ssh command" do
-      ssh.send(:ssh_command, options).should == "ssh host"
+      ssh.ssh_command(options).should == "ssh host"
     end
 
     context "given a port" do
-      let(:options) do { :host => "host", :port => "port" } end
+      let(:options) do { host: "host", port: "port" } end
       it "should be added to the command" do
-        ssh.send(:ssh_command, options).should == "ssh -p port host"
+        ssh.ssh_command(options).should == "ssh -p port host"
       end
     end
 
     context "given a user" do
-      let(:options) do { :host => "host", :user => "user" } end
+      let(:options) do { host: "host", user: "user" } end
       it "should be added to the command" do
-        ssh.send(:ssh_command, options).should == "ssh user@host"
+        ssh.ssh_command(options).should == "ssh user@host"
       end
     end
 
     context "given a password" do
-      let(:options) do { :host => "host", :password => "password" } end
+      let(:options) do { host: "host", password: "password" } end
 
       it "sshpass should be added to the command" do
-        ssh.send(:ssh_command, options).should == "sshpass -p password ssh host"
+        ssh.ssh_command(options).should == "sshpass -p password ssh host"
       end
     end
   end
@@ -66,15 +66,16 @@ describe Photocopier::SSH do
   context "#rsh_arguments" do
     it "should build arguments for rsync" do
       ssh.should_receive(:ssh_command).with(options)
-      ssh.send(:rsh_arguments)
+      ssh.rsh_arguments
     end
 
     context "given a gateway" do
       let(:options) { options_with_gateway }
+
       it "should include gateway options" do
         ssh.should_receive(:ssh_command).with(gateway_config)
         ssh.should_receive(:ssh_command).with(options)
-        ssh.send(:rsh_arguments)
+        ssh.rsh_arguments
       end
     end
   end
@@ -82,6 +83,7 @@ describe Photocopier::SSH do
   context "#rsync" do
     before(:each) do
       ssh.stub(:rsh_arguments).and_return("rsh_arguments")
+      ssh.stub(:rsync_options).and_return("rsync_options")
     end
 
     let(:rsync_command) {
@@ -94,13 +96,14 @@ describe Photocopier::SSH do
         --compress
         --omit-dir-times
         --delete
+        rsync_options
       )
     }
 
     it "should build an rsync command" do
       rsync_command << "source/" << "destination"
       ssh.should_receive(:run).with(*rsync_command)
-      ssh.send(:rsync, "source", "destination")
+      ssh.rsync("source", "destination")
     end
 
     context "given an exclude list" do
@@ -108,18 +111,18 @@ describe Photocopier::SSH do
         rsync_command << "--exclude" << ".git"
         rsync_command << "source/" << "destination"
         ssh.should_receive(:run).with(*rsync_command)
-        ssh.send(:rsync, "source", "destination", [".git"])
+        ssh.rsync("source", "destination", [".git"])
       end
     end
   end
 
   context "adapter interface" do
 
-    let(:remote_path) { stub }
-    let(:local_path)  { stub }
-    let(:file_path)   { stub }
-    let(:scp)         { stub }
-    let(:session)     { stub(:scp => scp) }
+    let(:remote_path) { double }
+    let(:local_path)  { double }
+    let(:file_path)   { double }
+    let(:scp)         { double }
+    let(:session)     { double(scp: scp) }
 
     before(:each) do
       ssh.stub(:session).and_return(session)
