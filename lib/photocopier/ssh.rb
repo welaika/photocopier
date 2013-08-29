@@ -70,12 +70,10 @@ module Photocopier
       [ stdout, stderr, exit_code ]
     end
 
-    private
-
     def rsync(source, destination, exclude = [])
       command = [
         "rsync", "--progress", "-e", rsh_arguments, "-rlpt", "--compress",
-        "--omit-dir-times", "--delete"
+        "--omit-dir-times", "--delete", rsync_options
       ]
 
       exclude.map do |glob|
@@ -109,6 +107,8 @@ module Photocopier
       command
     end
 
+    private
+
     def gateway
       opts = gateway_options
       host = opts.delete(:host)
@@ -119,5 +119,10 @@ module Photocopier
     def gateway_options
       options[:gateway] || {}
     end
+
+    def rsync_options
+      options[:rsync_options] || ""
+    end
+
   end
 end

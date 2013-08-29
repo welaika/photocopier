@@ -15,9 +15,10 @@ describe Photocopier::FTP do
 
     context "passive mode" do
       let(:options) do { :host => "host", :passive => true } end
+      let(:ftp) { double('ftp').as_null_object }
 
       it "should enable passive mode" do
-        Net::FTP.stub(:open).and_return(stub.as_null_object)
+        Net::FTP.stub(:open).and_return(ftp)
         ftp.session.should be_passive
       end
     end
@@ -109,10 +110,10 @@ describe Photocopier::FTP do
 
   context "adapter interface" do
 
-    let(:remote_path) { stub }
-    let(:local_path)  { stub }
-    let(:file_path)   { stub }
-    let(:session)     { stub }
+    let(:remote_path) { double }
+    let(:local_path)  { double }
+    let(:file_path)   { double }
+    let(:session)     { double }
 
     before(:each) do
       ftp.stub(:session).and_return(session)
