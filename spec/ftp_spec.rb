@@ -5,7 +5,7 @@ describe Photocopier::FTP do
   it_behaves_like "a Photocopier adapter"
 
   let(:ftp) { Photocopier::FTP.new(options) }
-  let(:options) do { :host => "host", :user => "user", :password => "password" } end
+  let(:options) do { host: "host", user: "user", password: "password" } end
 
   context "#session" do
     it "retrieves an FTP session" do
@@ -14,7 +14,7 @@ describe Photocopier::FTP do
     end
 
     context "passive mode" do
-      let(:options) do { :host => "host", :passive => true } end
+      let(:options) do { host: "host", passive: true } end
       let(:ftp) { double('ftp').as_null_object }
 
       it "should enable passive mode" do
@@ -25,21 +25,21 @@ describe Photocopier::FTP do
   end
 
   context "#remote_ftp_url" do
-    let(:options) do { :host => "host" } end
+    let(:options) do { host: "host" } end
 
     it "should build an ftp url" do
       ftp.send(:remote_ftp_url).should == "ftp://host"
     end
 
     context "given an username" do
-      let(:options) do { :host => "host", :user => "user" } end
+      let(:options) do { host: "host", user: "user" } end
 
       it "should add it to the url" do
         ftp.send(:remote_ftp_url).should == "ftp://user@host"
       end
 
       context "given a password" do
-        let(:options) do { :host => "host", :user => "user", :password => "password" } end
+        let(:options) do { host: "host", user: "user", password: "password" } end
 
         it "should add it to the url" do
           ftp.send(:remote_ftp_url).should == "ftp://user:password@host"

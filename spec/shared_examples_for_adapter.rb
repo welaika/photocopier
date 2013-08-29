@@ -31,7 +31,7 @@ shared_examples_for "a Photocopier adapter" do
 
     context "given a string" do
       let(:string) { "foobar" }
-      let(:file) { double(:path => "path") }
+      let(:file) { double(path: "path") }
 
       it "should write it to file, put it and remove the file" do
         Tempfile.stub(:new).and_return(file)
