@@ -70,19 +70,29 @@ module Photocopier
       [ stdout, stderr, exit_code ]
     end
 
+    def rsync_command
+      [
+        "rsync",
+        "--progress",
+        "-e",
+        rsh_arguments,
+        "-rlpt",
+        "--compress",
+        "--omit-dir-times",
+        "--delete",
+        rsync_options
+      ].compact
+    end
+
     def rsync(source, destination, exclude = [])
-      command = [
-        "rsync", "--progress", "-e", rsh_arguments, "-rlpt", "--compress",
-        "--omit-dir-times", "--delete", rsync_options
-      ]
+      command = rsync_command
 
       exclude.map do |glob|
         command << "--exclude"
         command << glob
       end
 
-      command << "#{source}/"
-      command << destination
+      command << "#{source}/" << destination
 
       run *command
     end
@@ -121,7 +131,7 @@ module Photocopier
     end
 
     def rsync_options
-      options[:rsync_options] || ""
+      options[:rsync_options]
     end
 
   end

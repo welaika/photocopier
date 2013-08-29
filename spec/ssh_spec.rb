@@ -86,19 +86,7 @@ describe Photocopier::SSH do
       ssh.stub(:rsync_options).and_return("rsync_options")
     end
 
-    let(:rsync_command) {
-      %w(
-        rsync
-        --progress
-        -e
-        rsh_arguments
-        -rlpt
-        --compress
-        --omit-dir-times
-        --delete
-        rsync_options
-      )
-    }
+    let(:rsync_command) { ssh.rsync_command }
 
     it "should build an rsync command" do
       rsync_command << "source/" << "destination"

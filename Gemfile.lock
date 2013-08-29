@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    photocopier (0.0.8)
+    photocopier (0.0.9)
       activesupport
       escape
       i18n
