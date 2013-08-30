@@ -8,8 +8,12 @@ require 'photocopier/adapter'
 module Photocopier
   class SSH < Adapter
 
+    attr_reader :gateway_options, :rsync_options
+
     def initialize(options = {})
       @options = options
+      @gateway_options = options.delete(:gateway)
+      @rsync_options = options.delete(:rsync_options)
     end
 
     def options
@@ -41,8 +45,8 @@ module Photocopier
       opts = options
       host = opts.delete(:host)
       user = opts.delete(:user)
-      opts.delete(:gateway)
-      @session ||= if gateway_options.any?
+
+      @session ||= if gateway_options
                      gateway.ssh(host, user, opts)
                    else
                      Net::SSH.start(host, user, opts)
@@ -99,9 +103,7 @@ module Photocopier
 
     def rsh_arguments
       arguments = []
-      if gateway_options.any?
-        arguments << ssh_command(gateway_options)
-      end
+      arguments << ssh_command(gateway_options) if gateway_options
       arguments << ssh_command(options)
       arguments.join(" ")
     end
@@ -120,18 +122,13 @@ module Photocopier
     private
 
     def gateway
-      opts = gateway_options
+      return unless gateway_options
+
+      opts = gateway_options.clone
       host = opts.delete(:host)
       user = opts.delete(:user)
+
       @gateway ||= Net::SSH::Gateway.new(host, user, opts)
-    end
-
-    def gateway_options
-      options[:gateway] || {}
-    end
-
-    def rsync_options
-      options[:rsync_options]
     end
 
   end
