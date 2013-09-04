@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
   gem.summary       = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
   gem.homepage      = "https://github.com/welaika/photocopier"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
