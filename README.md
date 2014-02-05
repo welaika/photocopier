@@ -107,7 +107,7 @@ On Linux, you can install it with your standard package manager. On Mac, you can
 have it via [`brew`](https://github.com/mxcl/homebrew):
 
 ```
-sudo brew install https://raw.github.com/gist/1513663/3e98bf9e03feb7e31eeddcd08f89ca86163a376d/sshpass.rb
+brew install https://raw.github.com/eugeneoden/homebrew/eca9de1/Library/Formula/sshpass.rb
 ```
 
 **Please note that on Ubuntu 11.10 `sshpass` is at version 1.04, which has a
