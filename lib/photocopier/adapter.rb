@@ -1,4 +1,3 @@
-require 'escape'
 require 'tempfile'
 require 'logger'
 require 'active_support/all'
@@ -31,7 +30,7 @@ module Photocopier
     protected
 
     def run(*args)
-      command = Escape.shell_command(args)
+      command = Shellwords.join(args)
       if logger.present?
         logger.info command
       end
