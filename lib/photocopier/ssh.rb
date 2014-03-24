@@ -2,6 +2,7 @@ require 'net/ssh'
 require 'net/ssh/gateway'
 require 'net/scp'
 require 'fileutils'
+require 'shellwords'
 
 require 'photocopier/adapter'
 
@@ -75,7 +76,7 @@ module Photocopier
     end
 
     def rsync_command
-      [
+      command = [
         "rsync",
         "--progress",
         "-e",
@@ -84,8 +85,9 @@ module Photocopier
         "--compress",
         "--omit-dir-times",
         "--delete",
-        rsync_options
-      ].compact
+      ]
+      command.concat Shellwords.split(rsync_options) if rsync_options
+      command.compact
     end
 
     def rsync(source, destination, exclude = [])
