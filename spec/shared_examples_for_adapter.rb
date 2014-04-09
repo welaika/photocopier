@@ -49,7 +49,7 @@ shared_examples_for "a Photocopier adapter" do
       let(:arg) { double }
       let(:command) { double }
       before(:each) {
-        Shellwords.stub(:join).with([arg]).and_return(command)
+        Escape.stub(:shell_command).with([arg]).and_return(command)
       }
 
       it "should delegate to Kernel system" do
