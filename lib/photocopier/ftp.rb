@@ -52,7 +52,7 @@ module Photocopier
             "open #{remote_ftp_url}",
             "mkdir -p #{remote}",
             "cd #{remote}",
-            "lcd #{local}",
+            "lcd \"#{local}\"",
             lftp_mirror_arguments(reverse, exclude)
           ].join("; ")
     end
