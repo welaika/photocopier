@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.executables   = gem.files.grep(%r{^exe/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "photocopier"
   gem.require_paths = ["lib"]
@@ -26,5 +26,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "escape"
 
   gem.add_development_dependency "rake"
-  gem.add_development_dependency "rspec"
+  gem.add_development_dependency "rspec", "< 3"
+  gem.add_development_dependency "pry-byebug"
 end

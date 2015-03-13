@@ -1,11 +1,3 @@
-require 'net/ssh'
-require 'net/ssh/gateway'
-require 'net/scp'
-require 'fileutils'
-require 'shellwords'
-
-require 'photocopier/adapter'
-
 module Photocopier
   class SSH < Adapter
 

@@ -1,5 +1,4 @@
-require 'photocopier/ssh'
-require 'shared_examples_for_adapter'
+require "spec_helper"
 
 describe Photocopier::SSH do
   it_behaves_like "a Photocopier adapter"
@@ -17,7 +16,7 @@ describe Photocopier::SSH do
 
   context "#session" do
     it "retrieves an SSH session" do
-      Net::SSH.should_receive(:start).with("host", "user", {})
+      expect(Net::SSH).to receive(:start).with("host", "user", {})
       ssh.session
     end
 
@@ -26,8 +25,8 @@ describe Photocopier::SSH do
       let(:gateway) { double }
 
       it "goes through it to retrieve a session" do
-        Net::SSH::Gateway.stub(:new).with("gate_host", "gate_user", {}).and_return(gateway)
-        gateway.should_receive(:ssh).with("host", "user", {})
+        allow(Net::SSH::Gateway).to receive(:new).with("gate_host", "gate_user", {}).and_return(gateway)
+        expect(gateway).to receive(:ssh).with("host", "user", {})
         ssh.session
       end
     end
@@ -37,20 +36,20 @@ describe Photocopier::SSH do
     let(:options) do { host: "host" } end
 
     it "should build an ssh command" do
-      ssh.ssh_command(options).should == "ssh host"
+      expect(ssh.ssh_command(options)).to eq("ssh host")
     end
 
     context "given a port" do
       let(:options) do { host: "host", port: "port" } end
       it "should be added to the command" do
-        ssh.ssh_command(options).should == "ssh -p port host"
+        expect(ssh.ssh_command(options)).to eq("ssh -p port host")
       end
     end
 
     context "given a user" do
       let(:options) do { host: "host", user: "user" } end
       it "should be added to the command" do
-        ssh.ssh_command(options).should == "ssh user@host"
+        expect(ssh.ssh_command(options)).to eq("ssh user@host")
       end
     end
 
@@ -58,14 +57,14 @@ describe Photocopier::SSH do
       let(:options) do { host: "host", password: "password" } end
 
       it "sshpass should be added to the command" do
-        ssh.ssh_command(options).should == "sshpass -p password ssh host"
+        expect(ssh.ssh_command(options)).to eq("sshpass -p password ssh host")
       end
     end
   end
 
   context "#rsh_arguments" do
     it "should build arguments for rsync" do
-      ssh.should_receive(:ssh_command).with(options)
+      expect(ssh).to receive(:ssh_command).with(options)
       ssh.rsh_arguments
     end
 
@@ -73,8 +72,8 @@ describe Photocopier::SSH do
       let(:options) { options_with_gateway }
 
       it "should include gateway options" do
-        ssh.should_receive(:ssh_command).with(gateway_config)
-        ssh.should_receive(:ssh_command).with(options)
+        expect(ssh).to receive(:ssh_command).with(gateway_config)
+        expect(ssh).to receive(:ssh_command).with(options)
         ssh.rsh_arguments
       end
     end
@@ -82,15 +81,15 @@ describe Photocopier::SSH do
 
   context "#rsync" do
     before(:each) do
-      ssh.stub(:rsh_arguments).and_return("rsh_arguments")
-      ssh.stub(:rsync_options).and_return("rsync_options")
+      allow(ssh).to receive(:rsh_arguments).and_return("rsh_arguments")
+      allow(ssh).to receive(:rsync_options).and_return("rsync_options")
     end
 
     let(:rsync_command) { ssh.rsync_command }
 
     it "should build an rsync command" do
       rsync_command << "source/" << "destination"
-      ssh.should_receive(:run).with(*rsync_command)
+      expect(ssh).to receive(:run).with(*rsync_command)
       ssh.rsync("source", "destination")
     end
 
@@ -98,7 +97,7 @@ describe Photocopier::SSH do
       it "should skip excluded paths" do
         rsync_command << "--exclude" << ".git"
         rsync_command << "source/" << "destination"
-        ssh.should_receive(:run).with(*rsync_command)
+        expect(ssh).to receive(:run).with(*rsync_command)
         ssh.rsync("source", "destination", [".git"])
       end
     end
@@ -118,21 +117,21 @@ describe Photocopier::SSH do
 
     context "#get" do
       it "should get a remote path" do
-        scp.should_receive(:download!).with(remote_path, file_path)
+        expect(scp).to receive(:download!).with(remote_path, file_path)
         ssh.get(remote_path, file_path)
       end
     end
 
     context "#put_file" do
       it "should send a file to remote" do
-        scp.should_receive(:upload!).with(file_path, remote_path)
+        expect(scp).to receive(:upload!).with(file_path, remote_path)
         ssh.put_file(file_path, remote_path)
       end
     end
 
     context "#delete" do
       it "should delete a remote path" do
-        ssh.should_receive(:exec!).with("rm -rf foo")
+        expect(ssh).to receive(:exec!).with("rm -rf foo")
         ssh.delete("foo")
       end
     end
@@ -143,19 +142,18 @@ describe Photocopier::SSH do
 
       context "#get_directory" do
         it "should get a remote directory" do
-          FileUtils.should_receive(:mkdir_p).with(local_path)
-          ssh.should_receive(:rsync).with(":remote_path", local_path, exclude_list)
+          expect(FileUtils).to receive(:mkdir_p).with(local_path)
+          expect(ssh).to receive(:rsync).with(":remote_path", local_path, exclude_list)
           ssh.get_directory(remote_path, local_path, exclude_list)
         end
       end
 
       context "#put_directory" do
         it "should send a directory to remote" do
-          ssh.should_receive(:rsync).with(local_path, ":remote_path", exclude_list)
+          expect(ssh).to receive(:rsync).with(local_path, ":remote_path", exclude_list)
           ssh.put_directory(local_path, remote_path, exclude_list)
         end
       end
     end
   end
-
 end

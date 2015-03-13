@@ -1,8 +1,3 @@
-require 'tempfile'
-require 'logger'
-require 'active_support/all'
-require 'escape'
-
 module Photocopier
 
   class Adapter

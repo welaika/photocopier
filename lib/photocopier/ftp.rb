@@ -1,7 +1,3 @@
-require 'net/ftp'
-require 'photocopier/adapter'
-require 'fileutils'
-
 module Photocopier
   class FTP < Adapter
 

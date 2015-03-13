@@ -1,5 +1,4 @@
-require 'photocopier/ftp'
-require 'shared_examples_for_adapter'
+require "spec_helper"
 
 describe Photocopier::FTP do
   it_behaves_like "a Photocopier adapter"
@@ -9,7 +8,7 @@ describe Photocopier::FTP do
 
   context "#session" do
     it "retrieves an FTP session" do
-      Net::FTP.should_receive(:open).with("host", "user", "password")
+      expect(Net::FTP).to receive(:open).with("host", "user", "password")
       ftp.session
     end
 
@@ -18,8 +17,8 @@ describe Photocopier::FTP do
       let(:ftp) { double('ftp').as_null_object }
 
       it "should enable passive mode" do
-        Net::FTP.stub(:open).and_return(ftp)
-        ftp.session.should be_passive
+        allow(Net::FTP).to receive(:open).and_return(ftp)
+        expect(ftp.session).to be_passive
       end
     end
   end
@@ -28,21 +27,21 @@ describe Photocopier::FTP do
     let(:options) do { host: "host" } end
 
     it "should build an ftp url" do
-      ftp.send(:remote_ftp_url).should == "ftp://host"
+      expect(ftp.send(:remote_ftp_url)).to eq("ftp://host")
     end
 
     context "given an username" do
       let(:options) do { host: "host", user: "user" } end
 
       it "should add it to the url" do
-        ftp.send(:remote_ftp_url).should == "ftp://user@host"
+        expect(ftp.send(:remote_ftp_url)).to eq("ftp://user@host")
       end
 
       context "given a password" do
         let(:options) do { host: "host", user: "user", password: "password" } end
 
         it "should add it to the url" do
-          ftp.send(:remote_ftp_url).should == "ftp://user:password@host"
+          expect(ftp.send(:remote_ftp_url)).to eq("ftp://user:password@host")
         end
       end
     end
@@ -63,17 +62,17 @@ describe Photocopier::FTP do
     end
 
     it "should build arguments for lftp" do
-      ftp.send(:lftp_mirror_arguments, false, []).should == lftp_arguments.join(" ")
+      expect(ftp.send(:lftp_mirror_arguments, false, [])).to eq(lftp_arguments.join(" "))
     end
 
     it "should build args for reverse mirroring" do
       lftp_arguments << "--reverse"
-      ftp.send(:lftp_mirror_arguments, true, []).should == lftp_arguments.join(" ")
+      expect(ftp.send(:lftp_mirror_arguments, true, [])).to eq(lftp_arguments.join(" "))
     end
 
     it "should exclude files" do
       lftp_arguments << "--exclude-glob .git"
-      ftp.send(:lftp_mirror_arguments, false, [".git"]).should == lftp_arguments.join(" ")
+      expect(ftp.send(:lftp_mirror_arguments, false, [".git"])).to eq(lftp_arguments.join(" "))
     end
   end
 
@@ -83,8 +82,8 @@ describe Photocopier::FTP do
     let(:local) { "local" }
 
     before(:each) do
-      ftp.stub(:remote_ftp_url).and_return("remote_ftp_url")
-      ftp.stub(:lftp_mirror_arguments).and_return("lftp_mirror_arguments")
+      allow(ftp).to receive(:remote_ftp_url).and_return("remote_ftp_url")
+      allow(ftp).to receive(:lftp_mirror_arguments).and_return("lftp_mirror_arguments")
     end
 
     let(:lftp_command) do
@@ -103,7 +102,7 @@ describe Photocopier::FTP do
     end
 
     it "should build a lftp command" do
-      ftp.should_receive(:run).with(*lftp_command)
+      expect(ftp).to receive(:run).with(*lftp_command)
       ftp.send(:lftp, local, remote, false, [])
     end
   end
@@ -116,26 +115,26 @@ describe Photocopier::FTP do
     let(:session)     { double }
 
     before(:each) do
-      ftp.stub(:session).and_return(session)
+      allow(ftp).to receive(:session).and_return(session)
     end
 
     context "#get" do
       it "should get a remote path" do
-        session.should_receive(:get).with(remote_path, file_path)
+        expect(session).to receive(:get).with(remote_path, file_path)
         ftp.get(remote_path, file_path)
       end
     end
 
     context "#put_file" do
       it "should send a file to remote" do
-        session.should_receive(:put).with(file_path, remote_path)
+        expect(session).to receive(:put).with(file_path, remote_path)
         ftp.put_file(file_path, remote_path)
       end
     end
 
     context "#delete" do
       it "should delete a remote path" do
-        session.should_receive(:delete).with(remote_path)
+        expect(session).to receive(:delete).with(remote_path)
         ftp.delete(remote_path)
       end
     end
@@ -146,15 +145,15 @@ describe Photocopier::FTP do
 
       context "#get_directory" do
         it "should get a remote directory" do
-          FileUtils.should_receive(:mkdir_p).with(local_path)
-          ftp.should_receive(:lftp).with(local_path, remote_path, false, exclude_list)
+          expect(FileUtils).to receive(:mkdir_p).with(local_path)
+          expect(ftp).to receive(:lftp).with(local_path, remote_path, false, exclude_list)
           ftp.get_directory(remote_path, local_path, exclude_list)
         end
       end
 
       context "#put_directory" do
         it "should send a directory to remote" do
-          ftp.should_receive(:lftp).with(local_path, remote_path, true, exclude_list)
+          expect(ftp).to receive(:lftp).with(local_path, remote_path, true, exclude_list)
           ftp.put_directory(local_path, remote_path, exclude_list)
         end
       end

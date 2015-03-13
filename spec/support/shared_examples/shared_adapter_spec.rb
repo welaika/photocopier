@@ -1,5 +1,3 @@
-require 'photocopier/adapter'
-
 shared_examples_for "a Photocopier adapter" do
   let(:adapter) { described_class.new }
 
@@ -13,7 +11,7 @@ shared_examples_for "a Photocopier adapter" do
         :get_directory,
         :delete
       ].each do |sym|
-        adapter.should respond_to(sym)
+        expect(adapter).to respond_to(sym)
       end
     end
   end
@@ -24,7 +22,7 @@ shared_examples_for "a Photocopier adapter" do
 
     context "given a real file path" do
       it "should put a file" do
-        adapter.should_receive(:put_file).with(file_path, remote_path)
+        expect(adapter).to receive(:put_file).with(file_path, remote_path)
         adapter.put(file_path, remote_path)
       end
     end
@@ -34,12 +32,12 @@ shared_examples_for "a Photocopier adapter" do
       let(:file) { double(path: "path") }
 
       it "should write it to file, put it and remove the file" do
-        Tempfile.stub(:new).and_return(file)
+        allow(Tempfile).to receive(:new).and_return(file)
 
-        file.should_receive(:write).with(string)
-        file.should_receive(:close)
-        adapter.should_receive(:put_file).with("path", remote_path)
-        file.should_receive(:unlink)
+        expect(file).to receive(:write).with(string)
+        expect(file).to receive(:close)
+        expect(adapter).to receive(:put_file).with("path", remote_path)
+        expect(file).to receive(:unlink)
 
         adapter.put(string, remote_path)
       end
@@ -49,11 +47,11 @@ shared_examples_for "a Photocopier adapter" do
       let(:arg) { double }
       let(:command) { double }
       before(:each) {
-        Escape.stub(:shell_command).with([arg]).and_return(command)
+        allow(Escape).to receive(:shell_command).with([arg]).and_return(command)
       }
 
       it "should delegate to Kernel system" do
-        adapter.should_receive(:system).with(command)
+        expect(adapter).to receive(:system).with(command)
         adapter.send(:run, arg)
       end
 
@@ -62,7 +60,7 @@ shared_examples_for "a Photocopier adapter" do
 
         it "should send the command to the logger" do
           adapter.logger = logger
-          logger.should_receive(:info).with(command)
+          expect(logger).to receive(:info).with(command)
           adapter.send(:run, arg)
         end
       end
