@@ -43,22 +43,24 @@ module Photocopier
     def lftp(local, remote, reverse, exclude)
       run "lftp",
           "-c",
+          "'",
           [
             "set ftp:list-options -a",
             "open #{remote_ftp_url}",
-            "mkdir -p #{remote}",
-            "cd #{remote}",
-            "lcd #{local}",
-            lftp_mirror_arguments(reverse, exclude)
-          ].join("; ")
+            "mkdir -p #{Shellwords.escape(remote)}",
+            "cd #{Shellwords.escape(remote)}",
+            "lcd #{Shellwords.escape(local)}",
+            lftp_mirror_arguments(reverse, exclude),
+          ].join("; "),
+          "'"
     end
 
     def remote_ftp_url
       url = options[:scheme].presence || "ftp"
       url << "://"
       if options[:user].present?
-        url << options[:user]
-        url << ":#{options[:password]}" if options[:password].present?
+        url << CGI.escape(options[:user])
+        url << ":#{CGI.escape(options[:password])}" if options[:password].present?
         url << "@"
       end
       url << options[:host]
