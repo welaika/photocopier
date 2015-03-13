@@ -43,6 +43,14 @@ RSpec.describe Photocopier::FTP do
         end
       end
     end
+
+    context "given a scheme (protocol)" do
+      let(:options) do { scheme: "ftps", host: "host" } end
+
+      it "should add it to the url" do
+        expect(ftp.send(:remote_ftp_url)).to eq("ftps://host")
+      end
+    end
   end
 
   context "#lftp_mirror_arguments" do

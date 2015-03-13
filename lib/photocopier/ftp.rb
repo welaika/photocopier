@@ -54,7 +54,8 @@ module Photocopier
     end
 
     def remote_ftp_url
-      url = "ftp://"
+      url = options[:scheme].presence || "ftp"
+      url << "://"
       if options[:user].present?
         url << options[:user]
         url << ":#{options[:password]}" if options[:password].present?

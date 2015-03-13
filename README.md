@@ -57,14 +57,14 @@ The very same commands are valid for the `Photocopier::FTP` adapter.
 
 ## FTP
 
-`Photocopier::FTP.new` accepts the following parameters (you need to pass them
-all).
+`Photocopier::FTP.new` accepts the following parameters 
 
 ```ruby
 {
-  host: '',
-  user: '',
-  password: ''
+  host: '', #mandatory
+  user: '', #mandatory
+  password: '', #mandatory
+  scheme: 'ftp' #default, could be any scheme compatibile with your lftp version
 }
 ```
 For performance reasons, the `.get_directory` and `.put_directory` commands make
