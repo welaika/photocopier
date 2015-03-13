@@ -1,4 +1,4 @@
-shared_examples_for "a Photocopier adapter" do
+RSpec.shared_examples_for "a Photocopier adapter" do
   let(:adapter) { described_class.new }
 
   context "adapter interface" do
@@ -59,6 +59,7 @@ shared_examples_for "a Photocopier adapter" do
         let(:logger) { double }
 
         it "should send the command to the logger" do
+          allow(adapter).to receive(:system)
           adapter.logger = logger
           expect(logger).to receive(:info).with(command)
           adapter.send(:run, arg)

@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Photocopier::FTP do
+RSpec.describe Photocopier::FTP do
   it_behaves_like "a Photocopier adapter"
 
   let(:ftp) { Photocopier::FTP.new(options) }

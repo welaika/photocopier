@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Photocopier::SSH do
+RSpec.describe Photocopier::SSH do
   it_behaves_like "a Photocopier adapter"
 
   let(:ssh) { Photocopier::SSH.new(options) }
@@ -112,7 +110,7 @@ describe Photocopier::SSH do
     let(:session)     { double(scp: scp) }
 
     before(:each) do
-      ssh.stub(:session).and_return(session)
+      allow(ssh). to receive(:session).and_return(session)
     end
 
     context "#get" do
