@@ -1,31 +1,34 @@
-# -*- encoding: utf-8 -*-
-require File.expand_path('../lib/photocopier/version', __FILE__)
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require "photocopier/version"
 
-Gem::Specification.new do |gem|
-  gem.authors       = ["Stefano Verna", "Ju Liu"]
-  gem.email         = ["stefano.verna@welaika.com", "ju.liu@welaika.com"]
-  gem.description   = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
-  gem.summary       = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
-  gem.homepage      = "https://github.com/welaika/photocopier"
-  gem.license       = "MIT"
+Gem::Specification.new do |spec|
+  spec.name          = "photocopier"
+  spec.version       = Photocopier::VERSION
+  spec.authors       = ["Stefano Verna", "Ju Liu"]
+  spec.email         = ["stefano.verna@welaika.com", "ju.liu@welaika.com"]
 
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^exe/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "photocopier"
-  gem.require_paths = ["lib"]
-  gem.version       = Photocopier::VERSION
+  spec.summary       = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
+  spec.description   = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
+  spec.homepage      = "https://github.com/welaika/photocopier"
+  spec.license       = "MIT"
 
-  gem.required_ruby_version = ">= 2.1.2"
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.bindir        = "exe"
+  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.require_paths = ["lib"]
 
-  gem.add_dependency "activesupport"
-  gem.add_dependency "i18n"
-  gem.add_dependency "net-ssh"
-  gem.add_dependency "net-scp"
-  gem.add_dependency "net-ssh-gateway"
-  gem.add_dependency "escape"
+  spec.required_ruby_version = ">= 2.1.2"
 
-  gem.add_development_dependency "rake"
-  gem.add_development_dependency "rspec", "~> 3.2"
-  gem.add_development_dependency "pry-byebug"
+  spec.add_dependency "activesupport", "~> 4.2.0"
+  spec.add_dependency "net-ssh", "~> 2.9.2"
+  spec.add_dependency "net-scp", "~> 1.2.1"
+  spec.add_dependency "net-ssh-gateway", "~> 1.2.0"
+  spec.add_dependency "escape", "~> 0.0.4"
+
+  spec.add_development_dependency "bundler", "~> 1.8"
+  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rspec", "~> 3.2"
+  spec.add_development_dependency "pry-byebug", "~> 3.0.1"
 end
