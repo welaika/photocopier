@@ -16,6 +16,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Photocopier::VERSION
 
+  gem.required_ruby_version = ">= 2.1.2"
+
   gem.add_dependency "activesupport"
   gem.add_dependency "i18n"
   gem.add_dependency "net-ssh"
