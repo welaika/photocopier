@@ -44,15 +44,11 @@ RSpec.shared_examples_for "a Photocopier adapter" do
     end
 
     context "#run" do
-      let(:arg) { double }
       let(:command) { double }
-      before(:each) {
-        allow(Escape).to receive(:shell_command).with([arg]).and_return(command)
-      }
 
       it "should delegate to Kernel system" do
         expect(adapter).to receive(:system).with(command)
-        adapter.send(:run, arg)
+        adapter.send(:run, command)
       end
 
       context "given a logger" do
@@ -62,7 +58,7 @@ RSpec.shared_examples_for "a Photocopier adapter" do
           allow(adapter).to receive(:system)
           adapter.logger = logger
           expect(logger).to receive(:info).with(command)
-          adapter.send(:run, arg)
+          adapter.send(:run, command)
         end
       end
     end

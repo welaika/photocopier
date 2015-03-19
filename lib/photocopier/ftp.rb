@@ -41,18 +41,16 @@ module Photocopier
     private
 
     def lftp(local, remote, reverse, exclude)
-      run "lftp",
-          "-c",
-          "'",
-          [
-            "set ftp:list-options -a",
-            "open #{remote_ftp_url}",
-            "mkdir -p #{Shellwords.escape(remote)}",
-            "cd #{Shellwords.escape(remote)}",
-            "lcd #{Shellwords.escape(local)}",
-            lftp_mirror_arguments(reverse, exclude),
-          ].join("; "),
-          "'"
+      command = [
+          "set ftp:list-options -a",
+          "open #{remote_ftp_url}",
+          "mkdir -p #{Shellwords.escape(remote)}",
+          "cd #{Shellwords.escape(remote)}",
+          "lcd #{Shellwords.escape(local)}",
+          lftp_mirror_arguments(reverse, exclude)
+      ].join("; ")
+
+      run "lftp -c '#{command}'"
     end
 
     def remote_ftp_url

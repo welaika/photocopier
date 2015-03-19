@@ -77,39 +77,31 @@ RSpec.describe Photocopier::FTP do
     end
 
     it "should exclude files" do
-      lftp_arguments << "--exclude-glob .git"
-      expect(ftp.send(:lftp_mirror_arguments, false, [".git"])).to eq(lftp_arguments.join(" "))
+      lftp_arguments << "--exclude-glob *.git"
+      expect(ftp.send(:lftp_mirror_arguments, false, ["*.git"])).to eq(lftp_arguments.join(" "))
     end
   end
 
   context "#lftp" do
-
-    let(:remote) { "remote" }
-    let(:local) { "local" }
-
-    before(:each) do
-      allow(ftp).to receive(:remote_ftp_url).and_return("remote_ftp_url")
-      allow(ftp).to receive(:lftp_mirror_arguments).and_return("lftp_mirror_arguments")
+    let(:options) do
+      {
+        host: 'example.com',
+        user: 'user',
+        password: "pass!\"',;$u&V^s"
+      }
     end
 
-    let(:lftp_command) do
-      [
-        "lftp",
-        "-c",
-        [
-          "set ftp:list-options -a",
-          "open remote_ftp_url",
-          "mkdir -p #{remote}",
-          "cd #{remote}",
-          "lcd #{local}",
-          "lftp_mirror_arguments"
-        ].join("; ")
-      ]
-    end
-
-    it "should build a lftp command" do
-      expect(ftp).to receive(:run).with(*lftp_command)
-      ftp.send(:lftp, local, remote, false, [])
+    it "should build a lftp command with the right escaping" do
+      command = [
+        'set ftp:list-options -a',
+        'open ftp://user:pass%21%22%27%2C%3B%24u%26V%5Es@example.com',
+        'mkdir -p remote\\ dir/',
+        'cd remote\\ dir/',
+        'lcd local\\ dir/',
+        'mirror --delete --use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=2 --reverse --exclude-glob .git --exclude-glob *.sql'
+      ].join("; ")
+      expect(ftp).to receive(:system).with("lftp -c '#{command}'")
+      ftp.send(:lftp, "local dir/", "remote dir/", true, [".git", "*.sql"])
     end
   end
 

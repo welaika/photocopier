@@ -25,8 +25,7 @@ module Photocopier
 
     protected
 
-    def run(*args)
-      command = Escape.shell_command(args)
+    def run(command)
       if logger.present?
         logger.info command
       end
