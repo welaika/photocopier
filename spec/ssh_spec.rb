@@ -78,26 +78,34 @@ RSpec.describe Photocopier::SSH do
   end
 
   context "#rsync" do
-    before(:each) do
-      allow(ssh).to receive(:rsh_arguments).and_return("rsh_arguments")
-      allow(ssh).to receive(:rsync_options).and_return("rsync_options")
+    let(:options) do
+      {
+        host: "host",
+        user: "user",
+        port: 8888,
+        rsync_options: "--human-readable --partial"
+      }
     end
-
-    let(:rsync_command) { ssh.rsync_command }
 
     it "should build an rsync command" do
-      rsync_command << "source/" << "destination"
-      expect(ssh).to receive(:run).with(*rsync_command)
-      ssh.rsync("source", "destination")
-    end
-
-    context "given an exclude list" do
-      it "should skip excluded paths" do
-        rsync_command << "--exclude" << ".git"
-        rsync_command << "source/" << "destination"
-        expect(ssh).to receive(:run).with(*rsync_command)
-        ssh.rsync("source", "destination", [".git"])
-      end
+      command = [
+        "rsync",
+        "--progress",
+        "-e",
+        "'ssh -p 8888 user@host'",
+        "-rlpt",
+        "--compress",
+        "--omit-dir-times",
+        "--delete",
+        "--human-readable",
+        "--partial",
+        "--exclude .git",
+        "--exclude *.sql",
+        "source\\ path/",
+        "destination\\ path"
+      ]
+      expect(ssh).to receive(:run).with(command.join(" "))
+      ssh.rsync("source path", "destination path", [".git", "*.sql"])
     end
   end
 

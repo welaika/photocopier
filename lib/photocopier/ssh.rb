@@ -72,7 +72,7 @@ module Photocopier
         "rsync",
         "--progress",
         "-e",
-        rsh_arguments,
+        "'#{rsh_arguments}'",
         "-rlpt",
         "--compress",
         "--omit-dir-times",
@@ -84,15 +84,17 @@ module Photocopier
 
     def rsync(source, destination, exclude = [])
       command = rsync_command
+      source = Shellwords.escape("#{source}/")
+      destination = Shellwords.escape(destination)
 
-      exclude.map do |glob|
+      exclude.each do |glob|
         command << "--exclude"
         command << glob
       end
 
-      command << "#{source}/" << destination
+      command << source << destination
 
-      run *command
+      run command.join(" ")
     end
 
     def rsh_arguments
