@@ -6,8 +6,8 @@ require "photocopier/version"
 Gem::Specification.new do |spec|
   spec.name          = "photocopier"
   spec.version       = Photocopier::VERSION
-  spec.authors       = ["Stefano Verna", "Ju Liu"]
-  spec.email         = ["stefano.verna@welaika.com", "ju.liu@welaika.com"]
+  spec.authors       = ["Stefano Verna", "Ju Liu", "Fabrizio Monti"]
+  spec.email         = ["stefano.verna@welaika.com", "ju.liu@welaika.com", "fabrizio.monti@welaika.com"]
 
   spec.summary       = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
   spec.description   = %q{Photocopier provides FTP/SSH adapters to abstract away file and directory copying.}
