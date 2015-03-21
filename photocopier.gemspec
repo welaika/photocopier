@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "net-ssh", "~> 2.9.2"
   spec.add_dependency "net-scp", "~> 1.2.1"
   spec.add_dependency "net-ssh-gateway", "~> 1.2.0"
-  spec.add_dependency "escape", "~> 0.0.4"
 
   spec.add_development_dependency "bundler", ">= 1.6.2"
   spec.add_development_dependency "rake", "~> 10.0"
