@@ -36,18 +36,6 @@ module Photocopier
       rsync "#{local_path}", ":#{remote_path}", exclude
     end
 
-    def session
-      opts = options
-      host = opts.delete(:host)
-      user = opts.delete(:user)
-
-      @session ||= if gateway_options
-                     gateway.ssh(host, user, opts)
-                   else
-                     Net::SSH.start(host, user, opts)
-                   end
-    end
-
     def exec!(cmd)
       stdout = ""
       stderr = ""
@@ -67,6 +55,20 @@ module Photocopier
       end
       session.loop
       [ stdout, stderr, exit_code ]
+    end
+
+    private
+
+    def session
+      opts = options
+      host = opts.delete(:host)
+      user = opts.delete(:user)
+
+      @session ||= if gateway_options
+                     gateway.ssh(host, user, opts)
+                   else
+                     Net::SSH.start(host, user, opts)
+                   end
     end
 
     def rsync_command
@@ -116,8 +118,6 @@ module Photocopier
       command
     end
 
-    private
-
     def gateway
       return unless gateway_options
 
@@ -127,6 +127,5 @@ module Photocopier
 
       @gateway ||= Net::SSH::Gateway.new(host, user, opts)
     end
-
   end
 end

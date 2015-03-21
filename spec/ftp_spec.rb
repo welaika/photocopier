@@ -7,7 +7,7 @@ RSpec.describe Photocopier::FTP do
   context "#session" do
     it "retrieves an FTP session" do
       expect(Net::FTP).to receive(:open).with("host", "user", "password")
-      ftp.session
+      ftp.send(:session)
     end
 
     context "passive mode" do

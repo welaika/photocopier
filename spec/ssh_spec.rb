@@ -15,7 +15,7 @@ RSpec.describe Photocopier::SSH do
   context "#session" do
     it "retrieves an SSH session" do
       expect(Net::SSH).to receive(:start).with("host", "user", {})
-      ssh.session
+      ssh.send(:session)
     end
 
     context "given a gateway " do
@@ -25,7 +25,7 @@ RSpec.describe Photocopier::SSH do
       it "goes through it to retrieve a session" do
         allow(Net::SSH::Gateway).to receive(:new).with("gate_host", "gate_user", {}).and_return(gateway)
         expect(gateway).to receive(:ssh).with("host", "user", {})
-        ssh.session
+        ssh.send(:session)
       end
     end
   end
@@ -34,20 +34,20 @@ RSpec.describe Photocopier::SSH do
     let(:options) do { host: "host" } end
 
     it "should build an ssh command" do
-      expect(ssh.ssh_command(options)).to eq("ssh host")
+      expect(ssh.send(:ssh_command, options)).to eq("ssh host")
     end
 
     context "given a port" do
       let(:options) do { host: "host", port: "port" } end
       it "should be added to the command" do
-        expect(ssh.ssh_command(options)).to eq("ssh -p port host")
+        expect(ssh.send(:ssh_command, options)).to eq("ssh -p port host")
       end
     end
 
     context "given a user" do
       let(:options) do { host: "host", user: "user" } end
       it "should be added to the command" do
-        expect(ssh.ssh_command(options)).to eq("ssh user@host")
+        expect(ssh.send(:ssh_command, options)).to eq("ssh user@host")
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Photocopier::SSH do
       let(:options) do { host: "host", password: "password" } end
 
       it "sshpass should be added to the command" do
-        expect(ssh.ssh_command(options)).to eq("sshpass -p password ssh host")
+        expect(ssh.send(:ssh_command, options)).to eq("sshpass -p password ssh host")
       end
     end
   end
@@ -63,7 +63,7 @@ RSpec.describe Photocopier::SSH do
   context "#rsh_arguments" do
     it "should build arguments for rsync" do
       expect(ssh).to receive(:ssh_command).with(options)
-      ssh.rsh_arguments
+      ssh.send(:rsh_arguments)
     end
 
     context "given a gateway" do
@@ -72,7 +72,7 @@ RSpec.describe Photocopier::SSH do
       it "should include gateway options" do
         expect(ssh).to receive(:ssh_command).with(gateway_config)
         expect(ssh).to receive(:ssh_command).with(options)
-        ssh.rsh_arguments
+        ssh.send(:rsh_arguments)
       end
     end
   end
@@ -105,7 +105,7 @@ RSpec.describe Photocopier::SSH do
         "destination\\ path"
       ]
       expect(ssh).to receive(:run).with(command.join(" "))
-      ssh.rsync("source path", "destination path", [".git", "*.sql"])
+      ssh.send(:rsync, "source path", "destination path", [".git", "*.sql"])
     end
   end
 

@@ -30,6 +30,8 @@ module Photocopier
       lftp(local_path, remote_path, true, exclude)
     end
 
+    private
+
     def session
       if @session.nil?
         @session = Net::FTP.open(options[:host], options[:user], options[:password])
@@ -37,8 +39,6 @@ module Photocopier
       end
       @session
     end
-
-    private
 
     def lftp(local, remote, reverse, exclude)
       command = [
