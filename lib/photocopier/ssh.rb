@@ -22,7 +22,7 @@ module Photocopier
     end
 
     def delete(remote_path)
-      exec!("rm -rf #{remote_path}")
+      exec!("rm -rf #{Shellwords.escape(remote_path)}")
     end
 
     def get_directory(remote_path, local_path, exclude = [])

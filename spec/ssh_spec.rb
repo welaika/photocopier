@@ -137,8 +137,8 @@ RSpec.describe Photocopier::SSH do
 
     context "#delete" do
       it "should delete a remote path" do
-        expect(ssh).to receive(:exec!).with("rm -rf foo")
-        ssh.delete("foo")
+        expect(ssh).to receive(:exec!).with("rm -rf my\\ directory")
+        ssh.delete("my directory")
       end
     end
 
