@@ -27,11 +27,13 @@ module Photocopier
 
     def get_directory(remote_path, local_path, exclude = [])
       FileUtils.mkdir_p(local_path)
+      remote_path << "/" unless remote_path.end_with?("/")
       rsync ":#{remote_path}", local_path, exclude
     end
 
     def put_directory(local_path, remote_path, exclude = [])
-      rsync local_path, ":#{remote_path}", exclude
+      local_path << "/" unless local_path.end_with?("/")
+      rsync "#{local_path}", ":#{remote_path}", exclude
     end
 
     def session
@@ -84,15 +86,14 @@ module Photocopier
 
     def rsync(source, destination, exclude = [])
       command = rsync_command
-      source = Shellwords.escape("#{source}/")
-      destination = Shellwords.escape(destination)
 
       exclude.each do |glob|
         command << "--exclude"
         command << glob
       end
 
-      command << source << destination
+      command << Shellwords.escape(source)
+      command << Shellwords.escape(destination)
 
       run command.join(" ")
     end

@@ -101,7 +101,7 @@ RSpec.describe Photocopier::SSH do
         "--partial",
         "--exclude .git",
         "--exclude *.sql",
-        "source\\ path/",
+        "source\\ path",
         "destination\\ path"
       ]
       expect(ssh).to receive(:run).with(command.join(" "))
@@ -112,7 +112,6 @@ RSpec.describe Photocopier::SSH do
   context "adapter interface" do
 
     let(:remote_path) { double }
-    let(:local_path)  { double }
     let(:file_path)   { double }
     let(:scp)         { double }
     let(:session)     { double(scp: scp) }
@@ -143,21 +142,20 @@ RSpec.describe Photocopier::SSH do
     end
 
     context "directories management" do
-      let(:remote_path) { "remote_path" }
       let(:exclude_list) { [] }
 
       context "#get_directory" do
         it "should get a remote directory" do
-          expect(FileUtils).to receive(:mkdir_p).with(local_path)
-          expect(ssh).to receive(:rsync).with(":remote_path", local_path, exclude_list)
-          ssh.get_directory(remote_path, local_path, exclude_list)
+          expect(FileUtils).to receive(:mkdir_p).with("local_path")
+          expect(ssh).to receive(:rsync).with(":remote_path/", "local_path", exclude_list)
+          ssh.get_directory("remote_path", "local_path", exclude_list)
         end
       end
 
       context "#put_directory" do
         it "should send a directory to remote" do
-          expect(ssh).to receive(:rsync).with(local_path, ":remote_path", exclude_list)
-          ssh.put_directory(local_path, remote_path, exclude_list)
+          expect(ssh).to receive(:rsync).with("local_path/", ":remote_path", exclude_list)
+          ssh.put_directory("local_path", "remote_path", exclude_list)
         end
       end
     end
