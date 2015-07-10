@@ -91,7 +91,7 @@ module Photocopier
 
       exclude.each do |glob|
         command << "--exclude"
-        command << glob
+        command << Shellwords.escape(glob)
       end
 
       command << Shellwords.escape(source)
