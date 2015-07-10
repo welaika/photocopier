@@ -1,5 +1,4 @@
 module Photocopier
-
   class Adapter
     attr_accessor :logger
 
