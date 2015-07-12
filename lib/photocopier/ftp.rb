@@ -43,6 +43,7 @@ module Photocopier
     def lftp(local, remote, reverse, exclude)
       command = [
           "set ftp:list-options -a",
+          "set cmd:fail-exit true",
           "open #{remote_ftp_url}",
           "mkdir -p #{Shellwords.escape(remote)}",
           "cd #{Shellwords.escape(remote)}",
