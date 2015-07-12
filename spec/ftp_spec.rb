@@ -63,7 +63,7 @@ RSpec.describe Photocopier::FTP do
         --allow-chown
         --allow-suid
         --no-umask
-        --parallel=2
+        --parallel=5
       )
     end
 
@@ -94,14 +94,15 @@ RSpec.describe Photocopier::FTP do
     it "should build a lftp command with the right escaping" do
       lftp_commands = [
         'set ftp:list-options -a',
+        'set cmd:fail-exit true',
         'open ftp://user:pass%21%22%27%2C%3B%24u%26V%5Es@example.com',
-        'mkdir -p remote\\ dir/',
-        'cd remote\\ dir/',
-        'lcd local\\ dir/',
-        'mirror --delete --use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=2 --reverse --exclude-glob .git --exclude-glob *.sql'
+        'find -d 1 remote\\ dir || mkdir -p remote\\ dir',
+        'lcd local\\ dir',
+        'cd remote\\ dir',
+        'mirror --delete --use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=5 --reverse --exclude-glob .git --exclude-glob *.sql --exclude-glob bin/'
       ].join("; ")
       expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
-      ftp.send(:lftp, "local dir/", "remote dir/", true, [".git", "*.sql"])
+      ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
     end
   end
 

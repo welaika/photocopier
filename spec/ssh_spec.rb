@@ -101,7 +101,7 @@ RSpec.describe Photocopier::SSH do
         "--partial",
         "--exclude .git",
         "--exclude \\*.sql",
-        "--exclude .sass_cache/\\*",
+        "--exclude tmp/\\*",
         "--exclude wp-content/\\*.sql",
         "--exclude Gemfile\\*",
         "--exclude bin/",
@@ -109,7 +109,7 @@ RSpec.describe Photocopier::SSH do
         "destination\\ path"
       ]
       expect(ssh).to receive(:run).with(command.join(" "))
-      ssh.send(:rsync, "source path", "destination path", [".git", "*.sql", ".sass_cache/*", "wp-content/*.sql", "Gemfile*", "bin/"])
+      ssh.send(:rsync, "source path", "destination path", [".git", "*.sql", "tmp/*", "wp-content/*.sql", "Gemfile*", "bin/"])
     end
   end
 
