@@ -72,7 +72,7 @@ RSpec.describe Photocopier::FTP do
     end
 
     it "should build args for reverse mirroring" do
-      lftp_arguments << "--reverse"
+      lftp_arguments << "--reverse --dereference"
       expect(ftp.send(:lftp_mirror_arguments, true, [])).to eq(lftp_arguments.join(" "))
     end
 
