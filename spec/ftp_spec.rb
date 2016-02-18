@@ -99,7 +99,7 @@ RSpec.describe Photocopier::FTP do
         'find -d 1 remote\\ dir || mkdir -p remote\\ dir',
         'lcd local\\ dir',
         'cd remote\\ dir',
-        'mirror --delete --use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=5 --reverse --exclude-glob .git --exclude-glob *.sql --exclude-glob bin/'
+        'mirror --delete --use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=5 --reverse --dereference --exclude-glob .git --exclude-glob *.sql --exclude-glob bin/'
       ].join("; ")
       expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
       ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
