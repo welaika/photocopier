@@ -72,7 +72,7 @@ RSpec.describe Photocopier::FTP do
     end
 
     it "should build args for reverse mirroring" do
-      lftp_arguments << "--reverse"
+      lftp_arguments << "--reverse --dereference"
       expect(ftp.send(:lftp_mirror_arguments, true, [])).to eq(lftp_arguments.join(" "))
     end
 
@@ -99,7 +99,7 @@ RSpec.describe Photocopier::FTP do
         'find -d 1 remote\\ dir || mkdir -p remote\\ dir',
         'lcd local\\ dir',
         'cd remote\\ dir',
-        'mirror --delete --use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=5 --reverse --exclude-glob .git --exclude-glob *.sql --exclude-glob bin/'
+        'mirror --delete --use-cache --verbose --allow-chown --allow-suid --no-umask --parallel=5 --reverse --dereference --exclude-glob .git --exclude-glob *.sql --exclude-glob bin/'
       ].join("; ")
       expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
       ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
