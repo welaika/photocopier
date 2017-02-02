@@ -121,3 +121,7 @@ it from working. Install version 1.03 or 1.05.**
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+## Author
+
+made with ❤️ and ☕️ by [weLaika](http://dev.welaika.com)
