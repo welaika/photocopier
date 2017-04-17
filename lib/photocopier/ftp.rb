@@ -56,15 +56,19 @@ module Photocopier
     end
 
     def remote_ftp_url
-      url = options[:scheme].presence || "ftp"
-      url << "://"
-      if options[:user].present?
-        url << CGI.escape(options[:user])
-        url << ":#{CGI.escape(options[:password])}" if options[:password].present?
-        url << "@"
+      if options[:bookmark].present?
+        Shellwords.escape(options[:bookmark])
+      else
+        url = options[:scheme].presence || "ftp"
+        url << "://"
+        if options[:user].present?
+          url << CGI.escape(options[:user])
+          url << ":#{CGI.escape(options[:password])}" if options[:password].present?
+          url << "@"
+        end
+        url << options[:host]
+        url
       end
-      url << options[:host]
-      url
     end
 
     def lftp_mirror_arguments(reverse, exclude = [])

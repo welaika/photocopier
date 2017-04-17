@@ -51,6 +51,14 @@ RSpec.describe Photocopier::FTP do
         expect(ftp.send(:remote_ftp_url)).to eq("ftps://host")
       end
     end
+
+    context "given a lftp bookmark" do
+      let(:options) do { bookmark: "bookmark name $test" } end
+
+      it "should shell escape it" do
+        expect(ftp.send(:remote_ftp_url)).to eq("bookmark\\ name\\ \\$test")
+      end
+    end
   end
 
   context "#lftp_mirror_arguments" do
