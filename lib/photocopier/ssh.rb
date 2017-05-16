@@ -82,7 +82,7 @@ module Photocopier
         "--omit-dir-times",
         "--delete",
       ]
-      command.concat Shellwords.split(rsync_options) if rsync_options
+      command.concat Shellwords.split(rsync_options).map(&:shellescape) if rsync_options
       command.compact
     end
 
