@@ -19,17 +19,16 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = "~> 2.4.1"
+  spec.required_ruby_version = "~> 2.4"
 
-  spec.add_dependency "activesupport", "~> 4.2.0"
-  spec.add_dependency "net-ssh", "~> 3.0"
-  spec.add_dependency "net-scp", "~> 1.2.1"
-  spec.add_dependency "net-ssh-gateway", "~> 1.2.0"
+  spec.add_dependency "activesupport", '~> 5.1', '>= 5.1.1'
+  spec.add_dependency "net-ssh", "~> 4.1"
+  spec.add_dependency "net-scp", "~> 1.2", ">= 1.2.1"
+  spec.add_dependency "net-ssh-gateway", "~> 2.0"
 
-  spec.add_development_dependency "bundler", ">= 1.6.2"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.3"
-  spec.add_development_dependency "simplecov", "~> 0.10"
-  spec.add_development_dependency "pry-byebug", "~> 3.1"
-  spec.add_development_dependency "gem-release"
+  spec.add_development_dependency "bundler", "~> 1.14", '>= 1.14.6'
+  spec.add_development_dependency "rake", "~> 12.0"
+  spec.add_development_dependency "rspec", "~> 3.6"
+  spec.add_development_dependency "simplecov", "~> 0.14", '>= 0.14.1'
+  spec.add_development_dependency "pry-byebug", "~> 3.4", '>= 3.4.2'
 end
