@@ -56,7 +56,7 @@ module Photocopier
     end
 
     def remote_ftp_url
-      url = options[:scheme].presence || "ftp"
+      url = options[:scheme].dup.presence || "ftp"
       url << "://"
       if options[:user].present?
         url << CGI.escape(options[:user])

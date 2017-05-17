@@ -50,6 +50,15 @@ RSpec.describe Photocopier::FTP do
       it "should add it to the url" do
         expect(ftp.send(:remote_ftp_url)).to eq("ftps://host")
       end
+
+      context "when called repeatedly" do
+        it "should add it to the url" do
+          ftp.send(:remote_ftp_url)
+          ftp.send(:remote_ftp_url)
+          expect(ftp.send(:remote_ftp_url)).to eq("ftps://host")
+        end
+      end
+
     end
   end
 
