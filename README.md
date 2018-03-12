@@ -125,3 +125,9 @@ it from working. Install version 1.03 or 1.05.**
 ## Author
 
 made with ❤️ and ☕️ by [weLaika](http://dev.welaika.com)
+
+## License
+
+(The MIT License)
+
+Copyright © 2012-2018 [weLaika](https://dev.welaika.com)
