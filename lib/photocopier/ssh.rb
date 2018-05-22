@@ -1,6 +1,5 @@
 module Photocopier
   class SSH < Adapter
-
     attr_reader :gateway_options, :rsync_options
 
     def initialize(options = {})
@@ -25,15 +24,15 @@ module Photocopier
       exec!("rm -rf #{Shellwords.escape(remote_path)}")
     end
 
-    def get_directory(remote_path, local_path, exclude = [])
+    def get_directory(remote_path, local_path, exclude = [], includes = [])
       FileUtils.mkdir_p(local_path)
       remote_path << "/" unless remote_path.end_with?("/")
-      rsync ":#{remote_path}", local_path, exclude
+      rsync ":#{remote_path}", local_path, exclude, includes
     end
 
-    def put_directory(local_path, remote_path, exclude = [])
+    def put_directory(local_path, remote_path, exclude = [], includes = [])
       local_path << "/" unless local_path.end_with?("/")
-      rsync "#{local_path}", ":#{remote_path}", exclude
+      rsync local_path.to_s, ":#{remote_path}", exclude, includes
     end
 
     def exec!(cmd)
@@ -41,20 +40,20 @@ module Photocopier
       stderr = ""
       exit_code = nil
       session.open_channel do |channel|
-        channel.exec(cmd) do |ch, success|
-          channel.on_data do |ch, data|
+        channel.exec(cmd) do |_ch, _success|
+          channel.on_data do |_ch, data|
             stdout << data
           end
-          channel.on_extended_data do |ch, type, data|
+          channel.on_extended_data do |_ch, _type, data|
             stderr << data
           end
-          channel.on_request("exit-status") do |ch, data|
+          channel.on_request("exit-status") do |_ch, data|
             exit_code = data.read_long
           end
         end
       end
       session.loop
-      [ stdout, stderr, exit_code ]
+      [stdout, stderr, exit_code]
     end
 
     private
@@ -80,14 +79,19 @@ module Photocopier
         "-rlpt",
         "--compress",
         "--omit-dir-times",
-        "--delete",
+        "--delete"
       ]
       command.concat Shellwords.split(rsync_options).map(&:shellescape) if rsync_options
       command.compact
     end
 
-    def rsync(source, destination, exclude = [])
+    def rsync(source, destination, exclude = [], includes = [])
       command = rsync_command
+
+      includes.each do |glob|
+        command << "--include"
+        command << Shellwords.escape(glob)
+      end
 
       exclude.each do |glob|
         command << "--exclude"
@@ -112,9 +116,8 @@ module Photocopier
       command << "-p #{opts[:port]} " if opts[:port].present?
       command << "#{opts[:user]}@" if opts[:user].present?
       command << opts[:host]
-      if opts[:password]
-        command = "sshpass -p #{opts[:password]} #{command}"
-      end
+      command = "sshpass -p #{opts[:password]} #{command}" if opts[:password]
+
       command
     end
 

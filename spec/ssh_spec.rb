@@ -2,8 +2,8 @@ RSpec.describe Photocopier::SSH do
   it_behaves_like "a Photocopier adapter"
 
   let(:ssh) { Photocopier::SSH.new(options) }
-  let(:options) do { host: "host", user: "user" } end
-  let(:gateway_config) do { host: "gate_host", user: "gate_user" } end
+  let(:options) { { host: "host", user: "user" } }
+  let(:gateway_config) { { host: "gate_host", user: "gate_user" } }
   let(:options_with_gateway) do
     {
       host: "host",
@@ -23,7 +23,9 @@ RSpec.describe Photocopier::SSH do
       let(:gateway) { double }
 
       it "goes through it to retrieve a session" do
-        allow(Net::SSH::Gateway).to receive(:new).with("gate_host", "gate_user", {}).and_return(gateway)
+        allow(Net::SSH::Gateway).to receive(:new)
+          .with("gate_host", "gate_user", {}).and_return(gateway)
+
         expect(gateway).to receive(:ssh).with("host", "user", {})
         ssh.send(:session)
       end
@@ -31,28 +33,28 @@ RSpec.describe Photocopier::SSH do
   end
 
   context "#ssh_command" do
-    let(:options) do { host: "host" } end
+    let(:options) { { host: "host" } }
 
     it "should build an ssh command" do
       expect(ssh.send(:ssh_command, options)).to eq("ssh host")
     end
 
     context "given a port" do
-      let(:options) do { host: "host", port: "port" } end
+      let(:options) { { host: "host", port: "port" } }
       it "should be added to the command" do
         expect(ssh.send(:ssh_command, options)).to eq("ssh -p port host")
       end
     end
 
     context "given a user" do
-      let(:options) do { host: "host", user: "user" } end
+      let(:options) { { host: "host", user: "user" } }
       it "should be added to the command" do
         expect(ssh.send(:ssh_command, options)).to eq("ssh user@host")
       end
     end
 
     context "given a password" do
-      let(:options) do { host: "host", password: "password" } end
+      let(:options) { { host: "host", password: "password" } }
 
       it "sshpass should be added to the command" do
         expect(ssh.send(:ssh_command, options)).to eq("sshpass -p password ssh host")
@@ -99,6 +101,8 @@ RSpec.describe Photocopier::SSH do
         "--delete",
         "--human-readable",
         "--partial",
+        "--include /wp-content/",
+        "--include /wp-content/plugins/",
         "--exclude .git",
         "--exclude \\*.sql",
         "--exclude tmp/\\*",
@@ -109,12 +113,17 @@ RSpec.describe Photocopier::SSH do
         "destination\\ path"
       ]
       expect(ssh).to receive(:run).with(command.join(" "))
-      ssh.send(:rsync, "source path", "destination path", [".git", "*.sql", "tmp/*", "wp-content/*.sql", "Gemfile*", "bin/"])
+      ssh.send(
+        :rsync,
+        "source path",
+        "destination path",
+        [".git", "*.sql", "tmp/*", "wp-content/*.sql", "Gemfile*", "bin/"],
+        ["/wp-content/", "/wp-content/plugins/"]
+      )
     end
   end
 
   context "adapter interface" do
-
     let(:remote_path) { double }
     let(:file_path)   { double }
     let(:scp)         { double }
@@ -147,18 +156,23 @@ RSpec.describe Photocopier::SSH do
 
     context "directories management" do
       let(:exclude_list) { [] }
+      let(:include_list) { [] }
 
       context "#get_directory" do
         it "should get a remote directory" do
           expect(FileUtils).to receive(:mkdir_p).with("local_path")
-          expect(ssh).to receive(:rsync).with(":remote_path/", "local_path", exclude_list)
+          expect(ssh).to receive(:rsync)
+            .with(":remote_path/", "local_path", exclude_list, include_list)
+
           ssh.get_directory("remote_path", "local_path", exclude_list)
         end
       end
 
       context "#put_directory" do
         it "should send a directory to remote" do
-          expect(ssh).to receive(:rsync).with("local_path/", ":remote_path", exclude_list)
+          expect(ssh).to receive(:rsync)
+            .with("local_path/", ":remote_path", exclude_list, include_list)
+
           ssh.put_directory("local_path", "remote_path", exclude_list)
         end
       end
