@@ -21,27 +21,60 @@ RSpec.describe Photocopier::FTP do
     end
   end
 
-  context "#remote_ftp_url" do
+  context "#remote_ftp_params" do
     let(:options) do { host: "host" } end
 
     it "should build an ftp url" do
-      expect(ftp.send(:remote_ftp_url)).to eq("ftp://host")
+      expect(ftp.send(:remote_ftp_params)).to eq("ftp://host")
     end
 
     context "given an username" do
       let(:options) do { host: "host", user: "user" } end
 
       it "should add it to the url" do
-        expect(ftp.send(:remote_ftp_url)).to eq("ftp://user@host")
+        expect(ftp.send(:remote_ftp_params)).to eq("--user user ftp://host")
       end
 
       context "given a password" do
         let(:options) do { host: "host", user: "user", password: "password" } end
 
         it "should add it to the url" do
-          expect(ftp.send(:remote_ftp_url)).to eq("ftp://user:password@host")
+          expect(ftp.send(:remote_ftp_params)).to eq("--user user --password password ftp://host")
         end
       end
+
+      context "given a password with special chars" do
+        let(:options) do { host: "host", user: "user", password: "&Bk_qR]fJnW!" } end
+
+        it "should add it to the url" do
+          expect(ftp.send(:remote_ftp_params)).to eq("--user user --password %26Bk_qR%5DfJnW%21 ftp://host")
+        end
+      end
+    end
+
+    context "given a scheme (protocol)" do
+      let(:options) do { scheme: "ftps", host: "host" } end
+
+      it "should add it to the url" do
+        expect(ftp.send(:remote_ftp_params)).to eq("ftps://host")
+      end
+
+      context "when called repeatedly" do
+        it "should add it to the url" do
+          ftp.send(:remote_ftp_params)
+          ftp.send(:remote_ftp_params)
+          expect(ftp.send(:remote_ftp_params)).to eq("ftps://host")
+        end
+      end
+
+    end
+  end
+
+  context "#remote_ftp_url" do
+    let(:options) do { host: "host" } end
+
+    it "should build an ftp url" do
+      expect(ftp.send(:remote_ftp_url)).to eq("ftp://host")
     end
 
     context "given a scheme (protocol)" do
@@ -58,7 +91,6 @@ RSpec.describe Photocopier::FTP do
           expect(ftp.send(:remote_ftp_url)).to eq("ftps://host")
         end
       end
-
     end
   end
 
@@ -104,7 +136,7 @@ RSpec.describe Photocopier::FTP do
       lftp_commands = [
         'set ftp:list-options -a',
         'set cmd:fail-exit true',
-        'open ftp://user:pass%21%22%27%2C%3B%24u%26V%5Es@example.com',
+        'open --user user --password pass%21%22%27%2C%3B%24u%26V%5Es ftp://example.com',
         'find -d 1 remote\\ dir || mkdir -p remote\\ dir',
         'lcd local\\ dir',
         'cd remote\\ dir',

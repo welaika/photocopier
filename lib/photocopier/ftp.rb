@@ -45,7 +45,7 @@ module Photocopier
       command = [
           "set ftp:list-options -a",
           "set cmd:fail-exit true",
-          "open #{remote_ftp_url}",
+          "open #{remote_ftp_params}",
           "find -d 1 #{remote} || mkdir -p #{remote}",
           "lcd #{local}",
           "cd #{remote}",
@@ -55,14 +55,20 @@ module Photocopier
       run "lftp -c '#{command}'"
     end
 
+    def remote_ftp_params
+      params = []
+      if options[:user].present?
+        params << '--user'
+        params << CGI.escape(options[:user])
+        params << "--password #{CGI.escape(options[:password])}" if options[:password].present?
+      end
+      params << remote_ftp_url
+      params.join(' ')
+    end
+
     def remote_ftp_url
       url = options[:scheme].dup.presence || "ftp"
       url << "://"
-      if options[:user].present?
-        url << CGI.escape(options[:user])
-        url << ":#{CGI.escape(options[:password])}" if options[:password].present?
-        url << "@"
-      end
       url << options[:host]
       url
     end
