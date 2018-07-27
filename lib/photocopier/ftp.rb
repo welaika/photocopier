@@ -13,7 +13,7 @@ module Photocopier
     end
 
     def put_file(file_path, remote_path)
-      session.put file_path, remote_path
+      session.put_file file_path, remote_path
     end
 
     def delete(remote_path)
@@ -32,11 +32,7 @@ module Photocopier
     private
 
     def session
-      if @session.nil?
-        @session = Net::FTP.open(options[:host], options[:user], options[:password])
-        @session.passive = options[:passive] if options.has_key?(:passive)
-      end
-      @session
+      @session ||= Session.new(options)
     end
 
     def lftp(local, remote, reverse, exclude)

@@ -135,7 +135,7 @@ RSpec.describe Photocopier::FTP do
 
     context "#put_file" do
       it "should send a file to remote" do
-        expect(session).to receive(:put).with(file_path, remote_path)
+        expect(session).to receive(:put_file).with(file_path, remote_path)
         ftp.put_file(file_path, remote_path)
       end
     end
