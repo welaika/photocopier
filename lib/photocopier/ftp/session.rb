@@ -5,9 +5,19 @@ module Photocopier
         @scheme = options[:scheme]
 
         if sftp?
-          @session = Net::SFTP.start(options[:host], options[:user], password: options[:password])
+          @session = Net::SFTP.start(
+            options[:host],
+            options[:user],
+            password: options[:password],
+            port: options[:port] || 22
+          )
         else
-          @session = Net::FTP.open(options[:host], options[:user], options[:password])
+          @session = Net::FTP.open(
+            options[:host],
+            username: options[:user],
+            password: options[:password],
+            port: options[:port] || 21
+          )
           @session.passive = options[:passive] if options.key?(:passive)
         end
       end

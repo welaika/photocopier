@@ -22,11 +22,11 @@ module Photocopier
 
     def get_directory(remote_path, local_path, exclude = [])
       FileUtils.mkdir_p(local_path)
-      lftp(local_path, remote_path, false, exclude)
+      lftp(local_path, remote_path, false, exclude, options[:port])
     end
 
     def put_directory(local_path, remote_path, exclude = [])
-      lftp(local_path, remote_path, true, exclude)
+      lftp(local_path, remote_path, true, exclude, options[:port])
     end
 
     private
@@ -35,20 +35,26 @@ module Photocopier
       @session ||= Session.new(options)
     end
 
-    def lftp(local, remote, reverse, exclude)
+    def lftp(local, remote, reverse, exclude, port = nil)
+      if port.nil? && options[:scheme] == 'sftp'
+        port = 22
+      elsif port.nil?
+        port = 21
+      end
+
       remote = Shellwords.escape(remote)
       local = Shellwords.escape(local)
       command = [
-          "set ftp:list-options -a",
-          "set cmd:fail-exit true",
-          "open #{remote_ftp_url}",
-          "find -d 1 #{remote} || mkdir -p #{remote}",
-          "lcd #{local}",
-          "cd #{remote}",
-          lftp_mirror_arguments(reverse, exclude)
+        "set ftp:list-options -a",
+        "set cmd:fail-exit true",
+        "open #{remote_ftp_url}",
+        "find -d 1 #{remote} || mkdir -p #{remote}",
+        "lcd #{local}",
+        "cd #{remote}",
+        lftp_mirror_arguments(reverse, exclude)
       ].join("; ")
 
-      run "lftp -c '#{command}'"
+      run "lftp -c '#{command}' -p #{port}"
     end
 
     def remote_ftp_url
@@ -64,7 +70,8 @@ module Photocopier
     end
 
     def lftp_mirror_arguments(reverse, exclude = [])
-      mirror = "mirror --delete --use-cache --verbose --no-perms --allow-suid --no-umask --parallel=5"
+      mirror = "mirror --delete --use-cache --verbose" \
+               " --no-perms --allow-suid --no-umask --parallel=5"
       mirror << " --reverse --dereference" if reverse
       exclude.each do |glob|
         mirror << " --exclude-glob #{glob}" # NOTE do not use Shellwords.escape here
