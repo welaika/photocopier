@@ -29,6 +29,16 @@ module Photocopier
       lftp(local_path, remote_path, true, exclude, options[:port])
     end
 
+    def inferred_port
+      if options[:port].nil? && options[:scheme] == 'sftp'
+        22
+      elsif options[:port].nil?
+        21
+      else
+        options[:port]
+      end
+    end
+
     private
 
     def session
@@ -36,25 +46,19 @@ module Photocopier
     end
 
     def lftp(local, remote, reverse, exclude, port = nil)
-      if port.nil? && options[:scheme] == 'sftp'
-        port = 22
-      elsif port.nil?
-        port = 21
-      end
-
       remote = Shellwords.escape(remote)
       local = Shellwords.escape(local)
       command = [
         "set ftp:list-options -a",
         "set cmd:fail-exit true",
-        "open #{remote_ftp_url}",
+        "open -p #{port || inferred_port} #{remote_ftp_url}",
         "find -d 1 #{remote} || mkdir -p #{remote}",
         "lcd #{local}",
         "cd #{remote}",
         lftp_mirror_arguments(reverse, exclude)
       ].join("; ")
 
-      run "lftp -c '#{command}' -p #{port}"
+      run "lftp -c '#{command}'"
     end
 
     def remote_ftp_url

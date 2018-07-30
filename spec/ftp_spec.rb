@@ -36,7 +36,7 @@ RSpec.describe Photocopier::FTP do
   end
 
   context "#remote_ftp_url" do
-    let(:options) do { host: "host" } end
+    let(:options) { { host: "host" } }
 
     it "should build an ftp url" do
       expect(ftp.send(:remote_ftp_url)).to eq("ftp://host")
@@ -119,7 +119,7 @@ RSpec.describe Photocopier::FTP do
       [
         'set ftp:list-options -a',
         'set cmd:fail-exit true',
-        "open #{options[:scheme] || 'ftp'}://user:pass%21%22%27%2C%3B%24u%26V%5Es@example.com",
+        "open -p #{ftp.inferred_port} #{options[:scheme] || 'ftp'}://user:pass%21%22%27%2C%3B%24u%26V%5Es@example.com",
         'find -d 1 remote\\ dir || mkdir -p remote\\ dir',
         'lcd local\\ dir',
         'cd remote\\ dir',
@@ -128,7 +128,8 @@ RSpec.describe Photocopier::FTP do
     end
 
     it "should build a lftp command with the right escaping" do
-      expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}' -p 2121")
+      expect(lftp_commands).to match('-p 2121')
+      expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
       ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"], options[:port])
     end
 
@@ -142,7 +143,8 @@ RSpec.describe Photocopier::FTP do
         it "uses default port 22" do
           options[:scheme] = 'sftp'
 
-          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}' -p 22")
+          expect(lftp_commands).to match('-p 22')
+          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
           ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
         end
       end
@@ -151,7 +153,8 @@ RSpec.describe Photocopier::FTP do
         it "uses default port 21" do
           options[:scheme] = 'ftp'
 
-          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}' -p 21")
+          expect(lftp_commands).to match('-p 21')
+          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
           ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
         end
       end
@@ -160,7 +163,8 @@ RSpec.describe Photocopier::FTP do
         it "uses default port 21" do
           options[:scheme] = 'ftps'
 
-          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}' -p 21")
+          expect(lftp_commands).to match('-p 21')
+          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
           ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
         end
       end
