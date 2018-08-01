@@ -2,16 +2,30 @@ RSpec.describe Photocopier::FTP do
   it_behaves_like "a Photocopier adapter"
 
   let(:ftp) { Photocopier::FTP.new(options) }
-  let(:options) do { host: "host", user: "user", password: "password" } end
+  let(:options) do
+    {
+      host: "host",
+      user: "user",
+      password: "password",
+      port: 2121
+    }
+  end
 
   context "#session" do
     it "retrieves an FTP session" do
-      expect(Net::FTP).to receive(:open).with("host", "user", "password")
+      expect(Net::FTP).to receive(:open).with(
+        "host",
+        username: "user",
+        password: "password",
+        port: 2121
+      )
       ftp.send(:session)
     end
 
     context "passive mode" do
-      let(:options) do { host: "host", passive: true } end
+      let(:options) do
+        { host: "host", passive: true }
+      end
       let(:ftp) { double('ftp').as_null_object }
 
       it "should enable passive mode" do
@@ -22,7 +36,7 @@ RSpec.describe Photocopier::FTP do
   end
 
   context "#remote_ftp_url" do
-    let(:options) do { host: "host" } end
+    let(:options) { { host: "host" } }
 
     it "should build an ftp url" do
       expect(ftp.send(:remote_ftp_url)).to eq("ftp://host")
@@ -96,22 +110,64 @@ RSpec.describe Photocopier::FTP do
       {
         host: 'example.com',
         user: 'user',
-        password: "pass!\"',;$u&V^s"
+        password: "pass!\"',;$u&V^s",
+        port: 2121
       }
     end
 
-    it "should build a lftp command with the right escaping" do
-      lftp_commands = [
+    let(:lftp_commands) do
+      [
         'set ftp:list-options -a',
         'set cmd:fail-exit true',
-        'open ftp://user:pass%21%22%27%2C%3B%24u%26V%5Es@example.com',
+        "open -p #{ftp.inferred_port} #{options[:scheme] || 'ftp'}://user:pass%21%22%27%2C%3B%24u%26V%5Es@example.com",
         'find -d 1 remote\\ dir || mkdir -p remote\\ dir',
         'lcd local\\ dir',
         'cd remote\\ dir',
         'mirror --delete --use-cache --verbose --no-perms --allow-suid --no-umask --parallel=5 --reverse --dereference --exclude-glob .git --exclude-glob *.sql --exclude-glob bin/'
       ].join("; ")
+    end
+
+    it "should build a lftp command with the right escaping" do
+      expect(lftp_commands).to match('-p 2121')
       expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
-      ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
+      ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"], options[:port])
+    end
+
+    context "without a port expressed" do
+      before do
+        options.delete :port
+      end
+      let(:ftp) { Photocopier::FTP.new(options) }
+
+      context "if schema is sftp" do
+        it "uses default port 22" do
+          options[:scheme] = 'sftp'
+
+          expect(lftp_commands).to match('-p 22')
+          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
+          ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
+        end
+      end
+
+      context "if schema is ftp" do
+        it "uses default port 21" do
+          options[:scheme] = 'ftp'
+
+          expect(lftp_commands).to match('-p 21')
+          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
+          ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
+        end
+      end
+
+      context "if schema is ftps" do
+        it "uses default port 21" do
+          options[:scheme] = 'ftps'
+
+          expect(lftp_commands).to match('-p 21')
+          expect(ftp).to receive(:system).with("lftp -c '#{lftp_commands}'")
+          ftp.send(:lftp, "local dir", "remote dir", true, [".git", "*.sql", "bin/"])
+        end
+      end
     end
   end
 
@@ -135,7 +191,7 @@ RSpec.describe Photocopier::FTP do
 
     context "#put_file" do
       it "should send a file to remote" do
-        expect(session).to receive(:put).with(file_path, remote_path)
+        expect(session).to receive(:put_file).with(file_path, remote_path)
         ftp.put_file(file_path, remote_path)
       end
     end
@@ -154,14 +210,14 @@ RSpec.describe Photocopier::FTP do
       context "#get_directory" do
         it "should get a remote directory" do
           expect(FileUtils).to receive(:mkdir_p).with(local_path)
-          expect(ftp).to receive(:lftp).with(local_path, remote_path, false, exclude_list)
+          expect(ftp).to receive(:lftp).with(local_path, remote_path, false, exclude_list, 2121)
           ftp.get_directory(remote_path, local_path, exclude_list)
         end
       end
 
       context "#put_directory" do
         it "should send a directory to remote" do
-          expect(ftp).to receive(:lftp).with(local_path, remote_path, true, exclude_list)
+          expect(ftp).to receive(:lftp).with(local_path, remote_path, true, exclude_list, 2121)
           ftp.put_directory(local_path, remote_path, exclude_list)
         end
       end

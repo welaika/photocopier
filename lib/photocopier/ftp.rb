@@ -13,7 +13,7 @@ module Photocopier
     end
 
     def put_file(file_path, remote_path)
-      session.put file_path, remote_path
+      session.put_file file_path, remote_path
     end
 
     def delete(remote_path)
@@ -22,34 +22,40 @@ module Photocopier
 
     def get_directory(remote_path, local_path, exclude = [])
       FileUtils.mkdir_p(local_path)
-      lftp(local_path, remote_path, false, exclude)
+      lftp(local_path, remote_path, false, exclude, options[:port])
     end
 
     def put_directory(local_path, remote_path, exclude = [])
-      lftp(local_path, remote_path, true, exclude)
+      lftp(local_path, remote_path, true, exclude, options[:port])
+    end
+
+    def inferred_port
+      if options[:port].nil? && options[:scheme] == 'sftp'
+        22
+      elsif options[:port].nil?
+        21
+      else
+        options[:port]
+      end
     end
 
     private
 
     def session
-      if @session.nil?
-        @session = Net::FTP.open(options[:host], options[:user], options[:password])
-        @session.passive = options[:passive] if options.has_key?(:passive)
-      end
-      @session
+      @session ||= Session.new(options)
     end
 
-    def lftp(local, remote, reverse, exclude)
+    def lftp(local, remote, reverse, exclude, port = nil)
       remote = Shellwords.escape(remote)
       local = Shellwords.escape(local)
       command = [
-          "set ftp:list-options -a",
-          "set cmd:fail-exit true",
-          "open #{remote_ftp_url}",
-          "find -d 1 #{remote} || mkdir -p #{remote}",
-          "lcd #{local}",
-          "cd #{remote}",
-          lftp_mirror_arguments(reverse, exclude)
+        "set ftp:list-options -a",
+        "set cmd:fail-exit true",
+        "open -p #{port || inferred_port} #{remote_ftp_url}",
+        "find -d 1 #{remote} || mkdir -p #{remote}",
+        "lcd #{local}",
+        "cd #{remote}",
+        lftp_mirror_arguments(reverse, exclude)
       ].join("; ")
 
       run "lftp -c '#{command}'"
@@ -68,7 +74,8 @@ module Photocopier
     end
 
     def lftp_mirror_arguments(reverse, exclude = [])
-      mirror = "mirror --delete --use-cache --verbose --no-perms --allow-suid --no-umask --parallel=5"
+      mirror = "mirror --delete --use-cache --verbose" \
+               " --no-perms --allow-suid --no-umask --parallel=5"
       mirror << " --reverse --dereference" if reverse
       exclude.each do |glob|
         mirror << " --exclude-glob #{glob}" # NOTE do not use Shellwords.escape here
