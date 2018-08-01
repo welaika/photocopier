@@ -5,6 +5,10 @@ To move directories to/from the remote server, it wraps efficient tools like lft
 
 [![Build Status](https://travis-ci.org/welaika/photocopier.svg?branch=master)](https://travis-ci.org/welaika/photocopier)
 
+## Prerequisites
+
+If you need to use FTP protocol you need to install LFTP on your machine.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -64,7 +68,7 @@ The very same commands are valid for the `Photocopier::FTP` adapter.
   host: '', #mandatory
   user: '', #mandatory
   password: '', #mandatory
-  scheme: 'ftp' #default, could be any scheme compatibile with your lftp version
+  scheme: 'ftp' #default, other options are sftp and ftps
 }
 ```
 For performance reasons, the `.get_directory` and `.put_directory` commands make
