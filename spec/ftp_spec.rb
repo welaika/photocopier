@@ -17,7 +17,8 @@ RSpec.describe Photocopier::FTP do
         "host",
         username: "user",
         password: "password",
-        port: 2121
+        port: 2121,
+        passive: false
       )
       ftp.send(:session)
     end
@@ -118,6 +119,7 @@ RSpec.describe Photocopier::FTP do
     let(:lftp_commands) do
       [
         'set ftp:list-options -a',
+        'set ftp:passive-mode false',
         'set cmd:fail-exit true',
         "open -p #{ftp.inferred_port} #{options[:scheme] || 'ftp'}://user:pass%21%22%27%2C%3B%24u%26V%5Es@example.com",
         'find -d 1 remote\\ dir || mkdir -p remote\\ dir',

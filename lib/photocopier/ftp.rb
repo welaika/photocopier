@@ -50,6 +50,7 @@ module Photocopier
       local = Shellwords.escape(local)
       command = [
         "set ftp:list-options -a",
+        "set ftp:passive-mode #{options[:passive] || 'false'}",
         "set cmd:fail-exit true",
         "open -p #{port || inferred_port} #{remote_ftp_url}",
         "find -d 1 #{remote} || mkdir -p #{remote}",

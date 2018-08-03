@@ -16,9 +16,9 @@ module Photocopier
             options[:host],
             username: options[:user],
             password: options[:password],
-            port: options[:port] || 21
+            port: options[:port] || 21,
+            passive: options[:passive] || false
           )
-          @session.passive = options[:passive] if options.key?(:passive)
         end
       end
 
