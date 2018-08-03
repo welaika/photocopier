@@ -4,22 +4,23 @@ module Photocopier
       def initialize(options)
         @scheme = options[:scheme]
 
-        if sftp?
-          @session = Net::SFTP.start(
-            options[:host],
-            options[:user],
-            password: options[:password],
-            port: options[:port] || 22
-          )
-        else
-          @session = Net::FTP.open(
-            options[:host],
-            username: options[:user],
-            password: options[:password],
-            port: options[:port] || 21,
-            passive: options[:passive] || false
-          )
-        end
+        @session = if sftp?
+                     Net::SFTP.start(
+                       options[:host],
+                       options[:user],
+                       password: options[:password],
+                       port: options[:port] || 22
+                     )
+                   else
+                     Net::FTP.open(
+                       options[:host],
+                       username: options[:user],
+                       password: options[:password],
+                       port: options[:port] || 21,
+                       passive: options[:passive] || false,
+                       ssl: @scheme == 'ftps' && true || false
+                     )
+                   end
       end
 
       def get(remote, local)
