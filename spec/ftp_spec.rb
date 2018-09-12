@@ -18,7 +18,8 @@ RSpec.describe Photocopier::FTP do
         username: "user",
         password: "password",
         port: 2121,
-        passive: false
+        passive: false,
+        ssl: false
       )
       ftp.send(:session)
     end
