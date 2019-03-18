@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", '~> 5.1', '>= 5.1.1'
   spec.add_dependency "net-scp", "~> 1.2", ">= 1.2.1"
   spec.add_dependency "net-sftp", "~> 2.1.2"
-  spec.add_dependency "net-ssh", "~> 4.1"
+  spec.add_dependency "net-ssh", "~> 5.2.0"
   spec.add_dependency "net-ssh-gateway", "~> 2.0"
 
   spec.add_development_dependency "bundler", "~> 1.14", '>= 1.14.6'
