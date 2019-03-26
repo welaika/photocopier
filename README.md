@@ -134,4 +134,4 @@ made with ❤️ and ☕️ by [weLaika](http://dev.welaika.com)
 
 (The MIT License)
 
-Copyright © 2012-2018 [weLaika](https://dev.welaika.com)
+Copyright © 2012-2019 [weLaika](https://dev.welaika.com)
