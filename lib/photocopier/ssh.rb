@@ -51,6 +51,8 @@ module Photocopier
             exit_code = data.read_long
           end
         end
+
+        channel.wait
       end
       session.loop
       [stdout, stderr, exit_code]
