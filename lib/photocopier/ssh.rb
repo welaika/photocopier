@@ -65,11 +65,11 @@ module Photocopier
       host = opts.delete(:host)
       user = opts.delete(:user)
 
-      @session ||= if gateway_options
-                     gateway.ssh(host, user, opts)
-                   else
-                     Net::SSH.start(host, user, opts)
-                   end
+      if gateway_options
+        gateway.ssh(host, user, opts)
+      else
+        Net::SSH.start(host, user, opts)
+      end
     end
 
     def rsync_command
@@ -130,7 +130,7 @@ module Photocopier
       host = opts.delete(:host)
       user = opts.delete(:user)
 
-      @gateway ||= Net::SSH::Gateway.new(host, user, opts)
+      Net::SSH::Gateway.new(host, user, opts)
     end
   end
 end
