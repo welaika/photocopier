@@ -39,7 +39,8 @@ module Photocopier
       stdout = ""
       stderr = ""
       exit_code = nil
-      session.open_channel do |channel|
+      my_session = session
+      my_session.open_channel do |channel|
         channel.exec(cmd) do |_ch, _success|
           channel.on_data do |_ch, data|
             stdout << data
@@ -54,7 +55,7 @@ module Photocopier
 
         channel.wait
       end
-      session.loop
+      my_session.loop
       [stdout, stderr, exit_code]
     end
 
