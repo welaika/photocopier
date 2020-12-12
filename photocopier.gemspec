@@ -25,18 +25,18 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.6.0'
 
-  spec.add_dependency 'activesupport', '~> 5.1', '>= 5.1.1'
-  spec.add_dependency 'net-scp', '~> 1.2', '>= 1.2.1'
-  spec.add_dependency 'net-sftp', '~> 2.1.2'
-  spec.add_dependency 'net-ssh', '~> 4.1'
+  spec.add_dependency 'activesupport', '~> 6.1'
+  spec.add_dependency 'net-scp', '~> 3.0'
+  spec.add_dependency 'net-sftp', '~> 3.0'
+  spec.add_dependency 'net-ssh', '~> 6.1'
   spec.add_dependency 'net-ssh-gateway', '~> 2.0'
 
   spec.add_development_dependency 'bundler', '~> 2.2'
-  spec.add_development_dependency 'pry-byebug', '~> 3.4', '>= 3.4.2'
-  spec.add_development_dependency 'rake', '~> 12.0'
-  spec.add_development_dependency 'rspec', '~> 3.6'
+  spec.add_development_dependency 'pry-byebug', '~> 3.9'
+  spec.add_development_dependency 'rake', '~> 13.0'
+  spec.add_development_dependency 'rspec', '~> 3.10'
   spec.add_development_dependency 'rubocop', '~> 1.6'
-  spec.add_development_dependency 'rubocop-rake'
-  spec.add_development_dependency 'rubocop-rspec'
-  spec.add_development_dependency 'simplecov', '~> 0.14', '>= 0.14.1'
+  spec.add_development_dependency 'rubocop-rake', '~> 0.5'
+  spec.add_development_dependency 'rubocop-rspec', '~> 2.0'
+  spec.add_development_dependency 'simplecov', '~> 0.20'
 end
