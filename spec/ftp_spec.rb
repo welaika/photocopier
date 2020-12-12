@@ -116,6 +116,7 @@ RSpec.describe Photocopier::FTP do
       }
     end
 
+    # rubocop:disable Layout/LineLength
     let(:lftp_commands) do
       [
         'set ftp:list-options -a',
@@ -128,6 +129,7 @@ RSpec.describe Photocopier::FTP do
         'mirror --delete --use-cache --verbose --no-perms --allow-suid --no-umask --parallel=5 --reverse --dereference --exclude-glob .git --exclude-glob *.sql --exclude-glob bin/'
       ].join('; ')
     end
+    # rubocop:enable Layout/LineLength
 
     it 'should build a lftp command with the right escaping' do
       expect(lftp_commands).to match('-p 2121')

@@ -6,7 +6,7 @@ AllCops:
   Exclude:
     - 'bin/*'
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 100
 
 Metrics/MethodLength:

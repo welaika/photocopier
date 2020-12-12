@@ -9,8 +9,10 @@ Gem::Specification.new do |spec|
   spec.email         = ['stefano.verna@welaika.com', 'ju.liu@welaika.com',
                         'fabrizio.monti@welaika.com']
 
-  spec.summary       = 'Photocopier provides FTP/SSH adapters to abstract away file and directory copying.'
-  spec.description   = 'Photocopier provides FTP/SSH adapters to abstract away file and directory copying.'
+  spec.summary       = 'Photocopier provides FTP/SSH adapters to abstract away file and ' \
+                       'directory copying.'
+  spec.description   = 'Photocopier provides FTP/SSH adapters to abstract away file and ' \
+                       'directory copying.'
   spec.homepage      = 'https://github.com/welaika/photocopier'
   spec.license       = 'MIT'
 
@@ -34,5 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 12.0'
   spec.add_development_dependency 'rspec', '~> 3.6'
   spec.add_development_dependency 'rubocop', '~> 1.6'
+  spec.add_development_dependency 'rubocop-rake'
+  spec.add_development_dependency 'rubocop-rspec'
   spec.add_development_dependency 'simplecov', '~> 0.14', '>= 0.14.1'
 end

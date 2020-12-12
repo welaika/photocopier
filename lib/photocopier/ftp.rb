@@ -1,8 +1,10 @@
 module Photocopier
   class FTP < Adapter
+    # rubocop:disable Lint/MissingSuper
     def initialize(options = {})
       @options = options
     end
+    # rubocop:enable Lint/MissingSuper
 
     def options
       @options.clone

@@ -2,11 +2,13 @@ module Photocopier
   class SSH < Adapter
     attr_reader :gateway_options, :rsync_options
 
+    # rubocop:disable Lint/MissingSuper
     def initialize(options = {})
       @options = options
       @gateway_options = options.delete(:gateway)
       @rsync_options = options.delete(:rsync_options)
     end
+    # rubocop:enable Lint/MissingSuper
 
     def options
       @options.clone
