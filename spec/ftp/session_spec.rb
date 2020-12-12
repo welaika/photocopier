@@ -15,10 +15,10 @@ RSpec.describe Photocopier::FTP::Session do
     allow(Net::FTP).to receive(:open).and_return(ftp)
   end
 
-  context "with ftp scheme" do
+  context 'with ftp scheme' do
     let(:session) { described_class.new(options) }
 
-    it "calls ftp methods" do
+    it 'calls ftp methods' do
       expect(ftp).to receive(:get).once
       expect(ftp).to receive(:put).once
       expect(ftp).to receive(:delete).once
@@ -29,14 +29,14 @@ RSpec.describe Photocopier::FTP::Session do
     end
   end
 
-  context "with sftp scheme" do
+  context 'with sftp scheme' do
     before do
       options[:scheme] = 'sftp'
     end
 
     let(:session) { described_class.new(options) }
 
-    it "calls sftp methods" do
+    it 'calls sftp methods' do
       expect(sftp).to receive(:download!).once
       expect(sftp).to receive(:upload!).once
       expect(sftp).to receive(:remove!).once

@@ -3,7 +3,7 @@
 Photocopier provides handy FTP/SSH adapters to abstract away file and directory copying.
 To move directories to/from the remote server, it wraps efficient tools like lftp and rsync.
 
-[![Build Status](https://travis-ci.org/welaika/photocopier.svg?branch=master)](https://travis-ci.org/welaika/photocopier)
+![Ruby](https://github.com/welaika/photocopier/workflows/Ruby/badge.svg)
 
 ## Prerequisites
 

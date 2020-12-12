@@ -1,8 +1,10 @@
 module Photocopier
   class FTP < Adapter
+    # rubocop:disable Lint/MissingSuper
     def initialize(options = {})
       @options = options
     end
+    # rubocop:enable Lint/MissingSuper
 
     def options
       @options.clone
@@ -49,37 +51,37 @@ module Photocopier
       remote = Shellwords.escape(remote)
       local = Shellwords.escape(local)
       command = [
-        "set ftp:list-options -a",
+        'set ftp:list-options -a',
         "set ftp:passive-mode #{options[:passive] || 'false'}",
-        "set cmd:fail-exit true",
+        'set cmd:fail-exit true',
         "open -p #{port || inferred_port} #{remote_ftp_url}",
         "find -d 1 #{remote} || mkdir -p #{remote}",
         "lcd #{local}",
         "cd #{remote}",
         lftp_mirror_arguments(reverse, exclude)
-      ].join("; ")
+      ].join('; ')
 
       run "lftp -c '#{command}'"
     end
 
     def remote_ftp_url
-      url = options[:scheme].dup.presence || "ftp"
-      url << "://"
+      url = options[:scheme].dup.presence || 'ftp'
+      url << '://'
       if options[:user].present?
         url << CGI.escape(options[:user])
         url << ":#{CGI.escape(options[:password])}" if options[:password].present?
-        url << "@"
+        url << '@'
       end
       url << options[:host]
       url
     end
 
     def lftp_mirror_arguments(reverse, exclude = [])
-      mirror = "mirror --delete --use-cache --verbose" \
-               " --no-perms --allow-suid --no-umask --parallel=5"
-      mirror << " --reverse --dereference" if reverse
+      mirror = 'mirror --delete --use-cache --verbose' \
+               ' --no-perms --allow-suid --no-umask --parallel=5'
+      mirror << ' --reverse --dereference' if reverse
       exclude.each do |glob|
-        mirror << " --exclude-glob #{glob}" # NOTE do not use Shellwords.escape here
+        mirror << " --exclude-glob #{glob}" # NOTE: do not use Shellwords.escape here
       end
       mirror
     end

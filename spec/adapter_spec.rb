@@ -1,3 +1,3 @@
 RSpec.describe Photocopier::Adapter do
-  it_behaves_like "a Photocopier adapter"
+  it_behaves_like 'a Photocopier adapter'
 end
