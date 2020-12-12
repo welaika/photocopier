@@ -26,18 +26,18 @@ module Photocopier
 
     def get_directory(remote_path, local_path, exclude = [], includes = [])
       FileUtils.mkdir_p(local_path)
-      remote_path << "/" unless remote_path.end_with?("/")
+      remote_path << '/' unless remote_path.end_with?('/')
       rsync ":#{remote_path}", local_path, exclude, includes
     end
 
     def put_directory(local_path, remote_path, exclude = [], includes = [])
-      local_path << "/" unless local_path.end_with?("/")
+      local_path << '/' unless local_path.end_with?('/')
       rsync local_path.to_s, ":#{remote_path}", exclude, includes
     end
 
     def exec!(cmd)
-      stdout = ""
-      stderr = ""
+      stdout = ''
+      stderr = ''
       exit_code = nil
       session.open_channel do |channel|
         channel.exec(cmd) do |_ch, _success|
@@ -47,7 +47,7 @@ module Photocopier
           channel.on_extended_data do |_ch, _type, data|
             stderr << data
           end
-          channel.on_request("exit-status") do |_ch, data|
+          channel.on_request('exit-status') do |_ch, data|
             exit_code = data.read_long
           end
         end
@@ -72,14 +72,14 @@ module Photocopier
 
     def rsync_command
       command = [
-        "rsync",
-        "--progress",
-        "-e",
+        'rsync',
+        '--progress',
+        '-e',
         "'#{rsh_arguments}'",
-        "-rlpt",
-        "--compress",
-        "--omit-dir-times",
-        "--delete"
+        '-rlpt',
+        '--compress',
+        '--omit-dir-times',
+        '--delete'
       ]
       command.concat Shellwords.split(rsync_options).map(&:shellescape) if rsync_options
       command.compact
@@ -89,30 +89,30 @@ module Photocopier
       command = rsync_command
 
       includes.each do |glob|
-        command << "--include"
+        command << '--include'
         command << Shellwords.escape(glob)
       end
 
       exclude.each do |glob|
-        command << "--exclude"
+        command << '--exclude'
         command << Shellwords.escape(glob)
       end
 
       command << Shellwords.escape(source)
       command << Shellwords.escape(destination)
 
-      run command.join(" ")
+      run command.join(' ')
     end
 
     def rsh_arguments
       arguments = []
       arguments << ssh_command(gateway_options) if gateway_options
       arguments << ssh_command(options)
-      arguments.join(" ")
+      arguments.join(' ')
     end
 
     def ssh_command(opts)
-      command = "ssh "
+      command = 'ssh '
       command << "-p #{opts[:port]} " if opts[:port].present?
       command << "#{opts[:user]}@" if opts[:user].present?
       command << opts[:host]

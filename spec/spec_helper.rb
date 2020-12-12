@@ -1,15 +1,15 @@
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
-require "pry-byebug"
+require 'pry-byebug'
 
-require "simplecov"
+require 'simplecov'
 SimpleCov.start do
- add_filter "/spec/"
+  add_filter '/spec/'
 end
 
-require "photocopier"
+require 'photocopier'
 
-Dir[File.expand_path("../support/**/*.rb", __FILE__)].sort.each { |f| require f }
+Dir[File.expand_path('support/**/*.rb', __dir__)].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -20,5 +20,5 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.example_status_persistence_file_path = "./spec/examples.txt"
+  config.example_status_persistence_file_path = './spec/examples.txt'
 end
