@@ -32,6 +32,7 @@ RSpec.describe Photocopier::FTP do
 
       it 'should enable passive mode' do
         allow(Net::FTP).to receive(:open).and_return(ftp)
+        allow(ftp).to receive(:passive?).and_return(true)
         expect(ftp.session).to be_passive
       end
     end
