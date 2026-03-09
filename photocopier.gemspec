@@ -23,21 +23,23 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.6.0'
+  spec.required_ruby_version = '>= 3.1.0'
 
   spec.add_dependency 'activesupport', '~> 6.1'
-  spec.add_dependency 'net-ftp', '~> 0.1.3'
-  spec.add_dependency 'net-scp', '~> 3.0'
-  spec.add_dependency 'net-sftp', '~> 3.0'
-  spec.add_dependency 'net-ssh', '~> 6.1'
+  spec.add_dependency 'bcrypt_pbkdf', '~> 1.0'
+  spec.add_dependency 'ed25519', '~> 1.2'
+  spec.add_dependency 'net-ftp', '~> 0.3.9'
+  spec.add_dependency 'net-scp', '~> 4.1'
+  spec.add_dependency 'net-sftp', '~> 4.0'
+  spec.add_dependency 'net-ssh', '~> 7.3'
   spec.add_dependency 'net-ssh-gateway', '~> 2.0'
 
-  spec.add_development_dependency 'bundler', '~> 2.2'
-  spec.add_development_dependency 'pry-byebug', '~> 3.9'
-  spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rspec', '~> 3.10'
-  spec.add_development_dependency 'rubocop', '~> 1.6'
-  spec.add_development_dependency 'rubocop-rake', '~> 0.5'
-  spec.add_development_dependency 'rubocop-rspec', '~> 2.0'
+  spec.add_development_dependency 'bundler', '~> 2.3.3'
+  spec.add_development_dependency 'debug', '~> 1.11.0'
+  spec.add_development_dependency 'rake', '~> 13.3.1'
+  spec.add_development_dependency 'rspec', '~> 3.13.2'
+  spec.add_development_dependency 'rubocop', '~> 1.81.7'
+  spec.add_development_dependency 'rubocop-rake', '~> 0.7.1'
+  spec.add_development_dependency 'rubocop-rspec', '~> 3.8.0'
   spec.add_development_dependency 'simplecov', '~> 0.20'
 end
