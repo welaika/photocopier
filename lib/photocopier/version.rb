@@ -1,5 +1,5 @@
-# frozen_string_litterla: true
+# frozen_string_literal: true
 
 module Photocopier
-  VERSION = '1.4.1'.freeze
+  VERSION = '2.0.0'
 end

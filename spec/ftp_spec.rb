@@ -1,7 +1,4 @@
 RSpec.describe Photocopier::FTP do
-  it_behaves_like 'a Photocopier adapter'
-
-  let(:ftp) { Photocopier::FTP.new(options) }
   let(:options) do
     {
       host: 'host',
@@ -10,6 +7,9 @@ RSpec.describe Photocopier::FTP do
       port: 2121
     }
   end
+  let(:ftp) { described_class.new(options) }
+
+  it_behaves_like 'a Photocopier adapter'
 
   context '#session' do
     it 'retrieves an FTP session' do
@@ -25,14 +25,18 @@ RSpec.describe Photocopier::FTP do
     end
 
     context 'passive mode' do
-      let(:options) do
-        { host: 'host', passive: true }
-      end
-      let(:ftp) { double('ftp').as_null_object }
+      let(:options) { { host: 'host', passive: true } }
 
       it 'should enable passive mode' do
-        allow(Net::FTP).to receive(:open).and_return(ftp)
-        expect(ftp.session).to be_passive
+        expect(Net::FTP).to receive(:open).with(
+          'host',
+          username: nil,
+          password: nil,
+          port: 21,
+          passive: true,
+          ssl: false
+        )
+        ftp.send(:session)
       end
     end
   end
@@ -141,7 +145,8 @@ RSpec.describe Photocopier::FTP do
       before do
         options.delete :port
       end
-      let(:ftp) { Photocopier::FTP.new(options) }
+
+      let(:ftp) { described_class.new(options) }
 
       context 'if schema is sftp' do
         it 'uses default port 22' do
@@ -181,7 +186,7 @@ RSpec.describe Photocopier::FTP do
     let(:file_path)   { double }
     let(:session)     { double }
 
-    before(:each) do
+    before do
       allow(ftp).to receive(:session).and_return(session)
     end
 

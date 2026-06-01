@@ -1,9 +1,14 @@
+plugins:
+  - rubocop-rake
+  - rubocop-rspec
+
 inherit_mode:
   merge:
     - Exclude
 
 AllCops:
-  TargetRubyVersion: 2.6
+  NewCops: enable
+  TargetRubyVersion: 3.2
   DisplayCopNames: true
   DisplayStyleGuide: true
 
@@ -71,3 +76,27 @@ Style/RedundantArgument: # (new in 1.4)
   Enabled: true
 Style/SwapValues: # (new in 1.1)
   Enabled: true
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+RSpec/ContextMethod:
+  Enabled: false
+RSpec/ContextWording:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/ExampleWording:
+  Enabled: false
+RSpec/MessageSpies:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+RSpec/NestedGroups:
+  Enabled: false
+RSpec/SpecFilePathFormat:
+  Enabled: false
+RSpec/VerifiedDoubles:
+  Enabled: false
