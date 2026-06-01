@@ -1,9 +1,4 @@
 RSpec.describe Photocopier::SSH do
-  it_behaves_like 'a Photocopier adapter'
-
-  let(:ssh) { Photocopier::SSH.new(options) }
-  let(:options) { { host: 'host', user: 'user' } }
-  let(:gateway_config) { { host: 'gate_host', user: 'gate_user' } }
   let(:options_with_gateway) do
     {
       host: 'host',
@@ -11,6 +6,11 @@ RSpec.describe Photocopier::SSH do
       gateway: gateway_config
     }
   end
+  let(:gateway_config) { { host: 'gate_host', user: 'gate_user' } }
+  let(:options) { { host: 'host', user: 'user' } }
+  let(:ssh) { described_class.new(options) }
+
+  it_behaves_like 'a Photocopier adapter'
 
   context '#session' do
     it 'retrieves an SSH session' do
@@ -18,7 +18,7 @@ RSpec.describe Photocopier::SSH do
       ssh.send(:session)
     end
 
-    context 'given a gateway ' do
+    context 'given a gateway' do
       let(:options) { options_with_gateway }
       let(:gateway) { double }
 
@@ -41,6 +41,7 @@ RSpec.describe Photocopier::SSH do
 
     context 'given a port' do
       let(:options) { { host: 'host', port: 'port' } }
+
       it 'should be added to the command' do
         expect(ssh.send(:ssh_command, options)).to eq('ssh -p port host')
       end
@@ -48,6 +49,7 @@ RSpec.describe Photocopier::SSH do
 
     context 'given a user' do
       let(:options) { { host: 'host', user: 'user' } }
+
       it 'should be added to the command' do
         expect(ssh.send(:ssh_command, options)).to eq('ssh user@host')
       end
@@ -129,7 +131,7 @@ RSpec.describe Photocopier::SSH do
     let(:scp)         { double }
     let(:session)     { double(scp: scp) }
 
-    before(:each) do
+    before do
       allow(ssh).to receive(:session).and_return(session)
     end
 

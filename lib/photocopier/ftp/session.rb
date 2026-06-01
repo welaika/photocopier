@@ -18,7 +18,7 @@ module Photocopier
                        password: options[:password],
                        port: options[:port] || 21,
                        passive: options[:passive] || false,
-                       ssl: @scheme == 'ftps' && true || false
+                       ssl: @scheme == 'ftps'
                      )
                    end
       end

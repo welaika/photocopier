@@ -77,8 +77,8 @@ module Photocopier
     end
 
     def lftp_mirror_arguments(reverse, exclude = [])
-      mirror = 'mirror --delete --use-cache --verbose' \
-               ' --no-perms --allow-suid --no-umask --parallel=5'
+      mirror = 'mirror --delete --use-cache --verbose ' \
+               '--no-perms --allow-suid --no-umask --parallel=5'
       mirror << ' --reverse --dereference' if reverse
       exclude.each do |glob|
         mirror << " --exclude-glob #{glob}" # NOTE: do not use Shellwords.escape here
